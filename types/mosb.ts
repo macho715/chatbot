@@ -1,5 +1,14 @@
 // types/mosb.ts - MOSB 관련 타입 정의
 
+export interface DriverDocument {
+  id: string;
+  name: string;
+  type: 'uaeId' | 'drivingLicense' | 'packingList' | 'safetyCertificate';
+  file: File;
+  uploadedAt: Date;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
 export interface DriverApplication {
   id: string;
   driverName: string;

@@ -1,7 +1,7 @@
 // components/organisms/MOSBEntryBot.tsx - MOSB 입장 신청 컴포넌트
 
 import React, { useState, useRef } from 'react';
-import { DriverApplication, DriverDocument } from '../../types/mosb';
+import { DriverApplication } from '../../types/mosb';
 import { MOSBEntryService } from '../../services/MOSBEntryService';
 
 interface MOSBEntryBotProps {
@@ -15,7 +15,12 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
 }) => {
   const [currentStep, setCurrentStep] = useState<'info' | 'documents' | 'review' | 'submitted'>('info');
   const [application, setApplication] = useState<Partial<DriverApplication>>({
-    documents: []
+    documents: {
+      uaeId: false,
+      drivingLicense: false,
+      packingList: false,
+      safetyCertificate: false
+    }
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -70,12 +75,19 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
         id: `MSB-${Date.now()}`,
         driverName: application.driverName || '',
         phone: application.phone || '',
+        email: application.email || '',
         company: application.company || '',
+        vehicleType: application.vehicleType || '',
         visitDate: application.visitDate || new Date().toISOString(),
-        vehicleNumber: application.vehicleNumber || '',
+        visitPurpose: application.visitPurpose || '',
         status: 'submitted',
-        submittedAt: new Date().toISOString(),
-        documents: application.documents || []
+        submittedAt: new Date(),
+        documents: application.documents || {
+          uaeId: false,
+          drivingLicense: false,
+          packingList: false,
+          safetyCertificate: false
+        }
       };
       
       onApplicationSubmit?.(mockApplication);
@@ -184,9 +196,9 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
             React.createElement('input', {
               type: "text",
               className: "w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500",
-              value: application.vehicleNumber || '',
+              value: application.vehicleType || '',
               onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                setApplication(prev => ({ ...prev, vehicleNumber: e.target.value }));
+                setApplication(prev => ({ ...prev, vehicleType: e.target.value }));
               },
               placeholder: "ABC-1234"
             })
@@ -252,7 +264,7 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
             React.createElement('p', null, "운전자: ", application.driverName),
             React.createElement('p', null, "전화번호: ", application.phone),
             React.createElement('p', null, "회사명: ", application.company),
-            React.createElement('p', null, "차량번호: ", application.vehicleNumber)
+                            React.createElement('p', null, "차량종류: ", application.vehicleType)
           )
         ),
         React.createElement('div', { className: "flex space-x-4" },
@@ -280,7 +292,14 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
           type: "button",
           onClick: () => {
             setCurrentStep('info');
-            setApplication({ documents: [] });
+            setApplication({ 
+              documents: {
+                uaeId: false,
+                drivingLicense: false,
+                packingList: false,
+                safetyCertificate: false
+              }
+            });
             setErrors({});
           },
           className: "px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"

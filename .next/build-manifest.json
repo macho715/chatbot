@@ -1,39 +1,41 @@
 {
   "polyfillFiles": [
-    "static/chunks/polyfills.js"
+    "static/chunks/polyfills-c67a75d1b6f99dc8.js"
   ],
-  "devFiles": [
-    "static/chunks/react-refresh.js"
-  ],
-  "ampDevFiles": [
-    "static/chunks/webpack.js",
-    "static/chunks/amp.js"
-  ],
+  "devFiles": [],
+  "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/development/_buildManifest.js",
-    "static/development/_ssgManifest.js"
+    "static/XbJLdvi1DnC3splIlTfrk/_buildManifest.js",
+    "static/XbJLdvi1DnC3splIlTfrk/_ssgManifest.js"
   ],
   "rootMainFiles": [],
   "pages": {
     "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
+      "static/chunks/webpack-69bfa6990bb9e155.js",
+      "static/chunks/framework-cee8c692f29c2ff5.js",
+      "static/chunks/main-ce44f6671cf0a032.js",
+      "static/chunks/664-9dc127d01ef3918e.js",
+      "static/chunks/pages/index-37dff571ab4ab943.js"
     ],
     "/_app": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/_app.js"
+      "static/chunks/webpack-69bfa6990bb9e155.js",
+      "static/chunks/framework-cee8c692f29c2ff5.js",
+      "static/chunks/main-ce44f6671cf0a032.js",
+      "static/css/a291dfd7cd6b591f.css",
+      "static/chunks/pages/_app-bad4d011cec6dab4.js"
     ],
     "/_error": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/_error.js"
+      "static/chunks/webpack-69bfa6990bb9e155.js",
+      "static/chunks/framework-cee8c692f29c2ff5.js",
+      "static/chunks/main-ce44f6671cf0a032.js",
+      "static/chunks/pages/_error-942918685354aae9.js"
     ],
     "/mosb-entry": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/mosb-entry.js"
+      "static/chunks/webpack-69bfa6990bb9e155.js",
+      "static/chunks/framework-cee8c692f29c2ff5.js",
+      "static/chunks/main-ce44f6671cf0a032.js",
+      "static/chunks/664-9dc127d01ef3918e.js",
+      "static/chunks/pages/mosb-entry-912d49748abf7b0c.js"
     ]
   },
   "ampFirstPages": []

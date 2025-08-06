@@ -402,7 +402,7 @@ describe('MOSB Entry API Integration', () => {
       phone: '+971-50-123-4567',
       company: 'Test Company',
       visitDate: '2024-12-25',
-      vehicleNumber: 'TEST-123',
+              vehicleType: 'Truck',
       documents: []
     });
     
