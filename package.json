@@ -1,0 +1,46 @@
+{
+  "name": "mosb-gate-agent",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --coverage --watchAll=false --ci",
+    "test:unit": "jest __tests__/simple.test.ts __tests__/MatchingService.test.ts",
+    "test:integration": "jest __tests__/ReactComponents.test.tsx",
+    "test:all": "jest --coverage --watchAll=false",
+    "lint": "echo 'Linting not configured'",
+    "type-check": "echo 'Type checking not configured'",
+    "security-audit": "npm audit --audit-level=moderate",
+    "dependencies-check": "npm outdated || echo 'Dependencies check completed'"
+  },
+  "dependencies": {
+    "@yudiel/react-qr-scanner": "^2.3.1",
+    "autoprefixer": "^10.4.0",
+    "next": "^14.2.31",
+    "next-pwa": "^5.6.0",
+    "postcss": "^8.4.0",
+    "qrcode.react": "^3.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.3.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "@types/minimatch": "^5.1.2",
+    "@types/node": "24.2.0",
+    "@types/react": "19.1.9",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "5.9.2"
+  }
+}
