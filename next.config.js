@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: false,
+  output: 'standalone', // Docker support
   experimental: {
     forceSwcTransforms: false,
   },
