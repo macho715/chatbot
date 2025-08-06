@@ -1,6 +1,6 @@
 {
   "name": "mosb-gate-agent",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,6 +12,11 @@
     "test:unit": "jest __tests__/simple.test.ts __tests__/MatchingService.test.ts",
     "test:integration": "jest __tests__/ReactComponents.test.tsx",
     "test:all": "jest --coverage --watchAll=false",
+    "test:mosb": "jest --testPathPattern=MOSB",
+    "test:integration": "jest --testPathPattern=integration",
+    "dev:mosb": "next dev --port 3001",
+    "build:analyze": "ANALYZE=true next build",
+    "type-check:mosb": "tsc --noEmit --project tsconfig.json",
     "lint": "echo 'Linting not configured'",
     "type-check": "echo 'Type checking not configured'",
     "security-audit": "npm audit --audit-level=moderate",
