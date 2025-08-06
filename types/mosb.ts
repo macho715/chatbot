@@ -1,26 +1,48 @@
-// types/mosb.ts - MOSB 시스템 타입 정의
-
-export interface DriverDocument {
-  id: string;
-  type: 'uae_id' | 'packing_list' | 'license';
-  fileName: string;
-  fileUrl?: string;
-  uploadedAt: Date;
-  status: 'pending' | 'approved' | 'rejected';
-}
+// types/mosb.ts - MOSB 관련 타입 정의
 
 export interface DriverApplication {
   id: string;
   driverName: string;
   phone: string;
+  email: string;
   company: string;
+  vehicleType: string;
   visitDate: string;
-  vehicleNumber: string;
-  documents: DriverDocument[];
-  status: 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected';
-  submittedAt?: Date;
+  visitPurpose: string;
+  status: 'submitted' | 'under_review' | 'approved' | 'rejected';
+  submittedAt: Date;
   approvedAt?: Date;
   adnocReferenceNumber?: string;
+  rejectionReason?: string;
+  documents: {
+    uaeId: boolean;
+    drivingLicense: boolean;
+    packingList: boolean;
+    safetyCertificate?: boolean;
+  };
+  notes?: string;
+}
+
+export interface ApplicationUpdate {
+  status?: 'submitted' | 'under_review' | 'approved' | 'rejected';
+  adnocReferenceNumber?: string;
+  rejectionReason?: string;
+  notes?: string;
+}
+
+export interface ApplicationResponse {
+  success: boolean;
+  application?: DriverApplication;
+  message?: string;
+  error?: string;
+}
+
+export interface ApplicationsListResponse {
+  success: boolean;
+  applications: DriverApplication[];
+  total: number;
+  page: number;
+  limit: number;
 }
 
 export interface LocationInfo {

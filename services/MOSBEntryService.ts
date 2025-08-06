@@ -1,203 +1,148 @@
-// services/MOSBEntryService.ts - MOSB 엔트리 서비스
+// services/MOSBEntryService.ts - MOSB Entry System 서비스
 
-import { DriverApplication, DriverDocument, LPOLocation, ApplicationStats } from '../types/mosb';
+export interface DriverDocument {
+  id: string;
+  type: 'uae_id' | 'packing_list' | 'driving_license' | 'safety_certificate';
+  fileName: string;
+  fileUrl?: string;
+  uploadedAt: Date;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
+export interface DriverApplication {
+  driverName: string;
+  phone: string;
+  company: string;
+  visitDate: string;
+  vehicleNumber: string;
+  documents: DriverDocument[];
+}
+
+export interface LocationInfo {
+  lpoNumber: string;
+  location: {
+    building: string;
+    zone: string;
+    contact: string;
+    instructions: string[];
+    operatingHours: string;
+  };
+  lastUpdated: Date;
+}
+
+export interface ValidationResult {
+  valid: boolean;
+  error?: string;
+}
 
 export class MOSBEntryService {
-  
-  /**
-   * 서류 업로드 (기존 파일 업로드 시스템 활용)
-   */
-  async uploadDocument(file: File, type: DriverDocument['type']): Promise<DriverDocument> {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('type', type);
-    formData.append('timestamp', Date.now().toString());
+  constructor() {
+    // 서비스 초기화
+  }
+
+  // 전화번호 검증
+  validatePhoneNumber(phone: string): boolean {
+    if (!phone) return false;
     
-    try {
-      const response = await fetch('/api/documents/upload', {
-        method: 'POST',
-        body: formData
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText}`);
-      }
-      
-      const result = await response.json();
-      
-      return {
-        id: result.id || `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        type,
-        fileName: file.name,
-        fileUrl: result.fileUrl,
-        uploadedAt: new Date(),
-        status: 'pending'
-      };
-    } catch (error) {
-      console.error('Document upload error:', error);
-      throw new Error('서류 업로드에 실패했습니다. 다시 시도해주세요.');
-    }
+    // UAE 전화번호 형식 검증
+    const uaePhoneRegex = /^(\+971|971|00971)?[\s-]?[0-9]{9}$/;
+    return uaePhoneRegex.test(phone.replace(/[\s-]/g, ''));
   }
 
-  /**
-   * 신청서 제출
-   */
-  async submitApplication(application: Omit<DriverApplication, 'id' | 'status'>): Promise<DriverApplication> {
-    try {
-      const response = await fetch('/api/mosb/applications', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...application,
-          status: 'submitted',
-          submittedAt: new Date().toISOString()
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Submission failed: ${response.statusText}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Application submission error:', error);
-      throw new Error('신청서 제출에 실패했습니다. 다시 시도해주세요.');
-    }
+  // LPO 번호 검증
+  validateLPONumber(lpoNumber: string): boolean {
+    if (!lpoNumber) return false;
+    
+    // LPO-YYYY-NNNNNN 형식 검증
+    const lpoRegex = /^LPO-\d{4}-\d{6}$/i;
+    return lpoRegex.test(lpoNumber);
   }
 
-  /**
-   * 신청서 상태 조회
-   */
-  async checkApplicationStatus(applicationId: string): Promise<DriverApplication | null> {
-    try {
-      const response = await fetch(`/api/mosb/applications/${applicationId}`);
-      
-      if (!response.ok) {
-        if (response.status === 404) return null;
-        throw new Error(`Status check failed: ${response.statusText}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Status check error:', error);
-      return null;
-    }
-  }
-
-  /**
-   * LPO 위치 정보 조회 (기존 LPO 매칭 시스템 확장)
-   */
-  async getLocationInfo(lpoNumber: string): Promise<LPOLocation | null> {
-    try {
-      const response = await fetch(`/api/lpo/location/${encodeURIComponent(lpoNumber)}`);
-      
-      if (!response.ok) {
-        if (response.status === 404) return null;
-        throw new Error(`Location lookup failed: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      
-      return {
-        ...data,
-        lastUpdated: new Date(data.lastUpdated)
-      };
-    } catch (error) {
-      console.error('Location lookup error:', error);
-      return null;
-    }
-  }
-
-  /**
-   * 신청서 목록 조회 (관리자용)
-   */
-  async getApplications(status?: DriverApplication['status']): Promise<DriverApplication[]> {
-    try {
-      const params = status ? `?status=${status}` : '';
-      const response = await fetch(`/api/mosb/applications${params}`);
-      
-      if (!response.ok) {
-        throw new Error(`Applications fetch failed: ${response.statusText}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Applications fetch error:', error);
-      return [];
-    }
-  }
-
-  /**
-   * 신청 통계 조회
-   */
-  async getApplicationStats(): Promise<ApplicationStats> {
-    try {
-      const response = await fetch('/api/mosb/stats');
-      
-      if (!response.ok) {
-        throw new Error(`Stats fetch failed: ${response.statusText}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Stats fetch error:', error);
-      return { total: 0, pending: 0, approved: 0, rejected: 0 };
-    }
-  }
-
-  /**
-   * WhatsApp 메시지 전송 (선택적 기능)
-   */
-  async sendWhatsAppNotification(phone: string, message: string): Promise<boolean> {
-    try {
-      const response = await fetch('/api/whatsapp/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, message })
-      });
-      
-      return response.ok;
-    } catch (error) {
-      console.error('WhatsApp notification error:', error);
-      return false;
-    }
-  }
-
-  /**
-   * 파일 검증 (클라이언트 사이드)
-   */
-  validateFile(file: File, type: DriverDocument['type']): { valid: boolean; error?: string } {
+  // 파일 검증
+  validateFile(file: File, documentType: string): ValidationResult {
+    // 파일 크기 검증 (10MB 제한)
     const maxSize = 10 * 1024 * 1024; // 10MB
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-    
     if (file.size > maxSize) {
-      return { valid: false, error: '파일 크기가 10MB를 초과합니다.' };
+      return {
+        valid: false,
+        error: `파일 크기가 10MB를 초과합니다.`
+      };
     }
-    
+
+    // 파일 형식 검증
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
     if (!allowedTypes.includes(file.type)) {
-      return { valid: false, error: 'JPG, PNG, PDF 파일만 업로드 가능합니다.' };
+      return {
+        valid: false,
+        error: `지원하지 않는 파일 형식입니다. JPG, PNG, PDF 파일만 업로드 가능합니다.`
+      };
     }
-    
+
     return { valid: true };
   }
 
-  /**
-   * 전화번호 형식 검증
-   */
-  validatePhoneNumber(phone: string): boolean {
-    // UAE 전화번호 형식: +971-XX-XXX-XXXX 또는 유사
-    const uaePhoneRegex = /^(\+971|00971|971)?[\s-]?[0-9]{1,2}[\s-]?[0-9]{3}[\s-]?[0-9]{4}$/;
-    return uaePhoneRegex.test(phone.replace(/\s|-/g, ''));
+  // 문서 업로드
+  async uploadDocument(file: File, documentType: string): Promise<DriverDocument> {
+    const validation = this.validateFile(file, documentType);
+    if (!validation.valid) {
+      throw new Error(validation.error);
+    }
+
+    // 실제 업로드 로직은 나중에 구현
+    return {
+      id: `doc_${Date.now()}`,
+      type: documentType as any,
+      fileName: file.name,
+      uploadedAt: new Date(),
+      status: 'pending'
+    };
   }
 
-  /**
-   * LPO 번호 형식 검증
-   */
-  validateLPONumber(lpoNumber: string): boolean {
-    // LPO 번호 형식: LPO-YYYY-XXXXXX
-    const lpoRegex = /^LPO-\d{4}-\d{6}$/;
-    return lpoRegex.test(lpoNumber.toUpperCase());
+  // 신청서 제출
+  async submitApplication(application: DriverApplication): Promise<{ id: string; status: string; driverName: string }> {
+    // 기본 검증
+    if (!this.validatePhoneNumber(application.phone)) {
+      throw new Error('올바르지 않은 전화번호 형식입니다.');
+    }
+
+    // API 호출 시뮬레이션
+    const response = await fetch('/api/mosb/applications', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(application),
+    });
+
+    if (!response.ok) {
+      throw new Error('신청서 제출에 실패했습니다.');
+    }
+
+    const result = await response.json();
+    return {
+      id: result.application?.id || `MSB-${Date.now()}`,
+      status: 'submitted',
+      driverName: application.driverName
+    };
+  }
+
+  // LPO 위치 정보 조회
+  async getLocationInfo(lpoNumber: string): Promise<LocationInfo | null> {
+    if (!this.validateLPONumber(lpoNumber)) {
+      throw new Error('올바르지 않은 LPO 번호 형식입니다.');
+    }
+
+    try {
+      const response = await fetch(`/api/lpo/location/${lpoNumber}`);
+      
+      if (!response.ok) {
+        return null;
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('LPO 위치 정보 조회 실패:', error);
+      return null;
+    }
   }
 } 

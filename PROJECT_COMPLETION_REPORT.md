@@ -157,6 +157,36 @@ return React.createElement(Component, pageProps);
 - [ ] 성능 모니터링
 - [ ] 자동 백업 설정
 
+## 🆕 신규 기능 통합 계획
+
+### **Phase 1: MOSB Entry Bot (Day 1-2)**
+- [ ] `MOSBEntryBot.tsx` 컴포넌트 개발
+- [ ] `MOSBEntryService.ts` 서비스 클래스 구현
+- [ ] `types/mosb.ts` 타입 정의 추가
+
+### **Phase 2: LPO Location Finder (Day 3-4)**
+- [ ] `LPOFinder.tsx` 컴포넌트 개발
+- [ ] API 엔드포인트 구현 (`/api/lpo/location/[lpoNumber]`)
+- [ ] QR 코드 스캔 연동 기능
+
+### **Phase 3: 통합 대시보드 (Day 5-7)**
+- [ ] `pages/mosb-entry.tsx` 새 페이지 생성
+- [ ] 기존 메인 페이지에 새 메뉴 추가
+- [ ] 테스트 커버리지 90%+ 달성
+
+### **예상 확장 기능**
+```yaml
+기존_9개_기능: ✅ 그대로 유지
+추가_3개_기능:
+  - 🚚 MOSB Entry Bot: 서류 접수 + 안내
+  - 📍 LPO Location Finder: 위치 조회  
+  - 📋 Integration Dashboard: 통합 현황판
+
+테스트_커버리지: 90%+ 유지 (기존 + 신규)
+성능_영향: 최소 (번들 사이즈 <10% 증가)
+호환성: 100% (기존 기능 무영향)
+```
+
 ## 📁 프로젝트 구조
 
 ```
@@ -165,15 +195,29 @@ mosb-gate-agent-chatgpt-v2/
 │   ├── atoms/           # 기본 UI 컴포넌트
 │   ├── molecules/       # 복합 UI 컴포넌트
 │   └── organisms/       # 페이지 레벨 컴포넌트
+│       ├── MOSBEntryBot.tsx        # 🆕 NEW (계획)
+│       └── LPOFinder.tsx           # 🆕 NEW (계획)
 ├── pages/               # Next.js 페이지
+│   ├── api/             # API 엔드포인트
+│   │   ├── mosb/        # 🆕 NEW (계획)
+│   │   └── lpo/         # 🆕 NEW (계획)
+│   ├── index.tsx        # 기존 메인 페이지
+│   └── mosb-entry.tsx   # 🆕 NEW (계획)
 ├── services/            # 비즈니스 로직
+│   └── MOSBEntryService.ts # 🆕 NEW (계획)
 ├── hooks/               # React 커스텀 훅
 ├── repositories/        # 데이터 접근 계층
+├── types/               # 타입 정의
+│   └── mosb.ts          # 🆕 NEW (계획)
 ├── __tests__/           # 테스트 파일들
+│   └── MOSBEntry.test.tsx # 🆕 NEW (계획)
 ├── .github/workflows/   # CI/CD 설정
 ├── Dockerfile           # Docker 설정
 ├── docker-compose.yml   # Docker Compose
 └── docs/               # 문서화
+    ├── PROJECT_COMPLETION_REPORT.md
+    ├── QUICK_START_GUIDE.md
+    └── INTEGRATION_GUIDE.md
 ```
 
 ## 🏆 성공 요인
@@ -199,6 +243,10 @@ mosb-gate-agent-chatgpt-v2/
 **접속 URL**: `http://localhost:3000`  
 **GitHub**: [https://github.com/macho715/chatbot](https://github.com/macho715/chatbot)
 
+**신규 기능 통합 가이드**: `INTEGRATION_GUIDE.md`
+
 ---
 
-**MOSB Gate Agent v2.0** - 성공적으로 완료되었습니다! 🎉 
+**MOSB Gate Agent v2.0** - 성공적으로 완료되었습니다! 🎉
+
+**다음 단계**: 신규 기능 통합으로 확장 준비 완료! 🚀 
