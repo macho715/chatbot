@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import LPOInboundMatch from './LPOInboundMatch';
 import QRCodeGenerator from './molecules/QRCodeGenerator';
 import ScanHistory from './organisms/ScanHistory';
