@@ -276,4 +276,4 @@ docker run -p 3000:3000 mosb-gate-agent
 
 ---
 
-**🚀 MOSB Gate Agent v2.0 - AI-Powered Logistics Management Platform** 
+**🚀 MOSB Gate Agent v2.0 - AI-Powered Logistics Management Platform** # GitHub Secrets 설정 완료 - 자동 배포 테스트
