@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPO API 테스트</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 LPO API 테스트</h1>
+    
+    <div class="test-section">
+        <h2>테스트 1: LPO-2024-001234 조회</h2>
+        <button onclick="testLPO('LPO-2024-001234')">테스트 실행</button>
+        <div id="result1"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>테스트 2: 존재하지 않는 LPO 조회</h2>
+        <button onclick="testLPO('LPO-2024-999999')">테스트 실행</button>
+        <div id="result2"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>테스트 3: 잘못된 형식 LPO 조회</h2>
+        <button onclick="testLPO('INVALID-FORMAT')">테스트 실행</button>
+        <div id="result3"></div>
+    </div>
+
+    <script>
+        async function testLPO(lpoNumber) {
+            const resultDiv = document.getElementById(`result${lpoNumber.includes('001234') ? '1' : lpoNumber.includes('999999') ? '2' : '3'}`);
+            resultDiv.innerHTML = '<p>테스트 중...</p>';
+            
+            try {
+                                 const response = await fetch(`http://localhost:3001/api/lpo/location/${lpoNumber}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'test-section success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ 성공!</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>LPO Number:</strong> ${data.lpoNumber}</p>
+                        <p><strong>Building:</strong> ${data.location.building}</p>
+                        <p><strong>Zone:</strong> ${data.location.zone}</p>
+                        <p><strong>Contact:</strong> ${data.location.contact}</p>
+                        <p><strong>Operating Hours:</strong> ${data.location.operatingHours}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.className = 'test-section error';
+                    resultDiv.innerHTML = `
+                        <h3>❌ 실패</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Error:</strong> ${data.error}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.className = 'test-section error';
+                resultDiv.innerHTML = `
+                    <h3>❌ 네트워크 오류</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p>개발 서버가 실행 중인지 확인하세요: <code>npm run dev</code></p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

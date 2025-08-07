@@ -1,133 +1,56 @@
-"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
 (() => {
 var exports = {};
-exports.id = 888;
-exports.ids = [888];
+exports.id = "pages/_app";
+exports.ids = ["pages/_app"];
 exports.modules = {
 
-/***/ 5656:
+/***/ "./pages/_app.tsx":
+/*!************************!*\
+  !*** ./pages/_app.tsx ***!
+  \************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ App)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6689);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(968);
-/* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_head__WEBPACK_IMPORTED_MODULE_1__);
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ App)\n/* harmony export */ });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _styles_globals_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../styles/globals.css */ \"./styles/globals.css\");\n/* harmony import */ var _styles_globals_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_styles_globals_css__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/head */ \"next/head\");\n/* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_head__WEBPACK_IMPORTED_MODULE_2__);\n\n\n\nfunction App({ Component , pageProps  }) {\n    return /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement((next_head__WEBPACK_IMPORTED_MODULE_2___default()), null, /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"application-name\",\n        content: \"MOSB Gate Agent\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"apple-mobile-web-app-capable\",\n        content: \"yes\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"apple-mobile-web-app-status-bar-style\",\n        content: \"default\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"apple-mobile-web-app-title\",\n        content: \"MOSB Gate\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"description\",\n        content: \"LPO 인바운드 매칭 및 QR 코드 관리 시스템\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"format-detection\",\n        content: \"telephone=no, date=no, email=no, address=no\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"mobile-web-app-capable\",\n        content: \"yes\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"msapplication-config\",\n        content: \"/icons/browserconfig.xml\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"msapplication-TileColor\",\n        content: \"#3b82f6\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"msapplication-tap-highlight\",\n        content: \"no\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"theme-color\",\n        content: \"#3b82f6\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"link\", {\n        rel: \"apple-touch-icon\",\n        href: \"/icons/icon-192x192.png\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"link\", {\n        rel: \"icon\",\n        type: \"image/png\",\n        sizes: \"32x32\",\n        href: \"/icons/icon-32x32.png\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"link\", {\n        rel: \"icon\",\n        type: \"image/png\",\n        sizes: \"16x16\",\n        href: \"/icons/icon-16x16.png\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"link\", {\n        rel: \"manifest\",\n        href: \"/manifest.json\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"link\", {\n        rel: \"mask-icon\",\n        href: \"/icons/safari-pinned-tab.svg\",\n        color: \"#3b82f6\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"link\", {\n        rel: \"shortcut icon\",\n        href: \"/favicon.ico\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"twitter:card\",\n        content: \"summary\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"twitter:url\",\n        content: \"https://mosb-gate-agent.vercel.app\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"twitter:title\",\n        content: \"MOSB Gate Agent\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"twitter:description\",\n        content: \"LPO 인바운드 매칭 및 QR 코드 관리 시스템\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"twitter:image\",\n        content: \"https://mosb-gate-agent.vercel.app/icons/icon-192x192.png\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        name: \"twitter:creator\",\n        content: \"@mosb\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        property: \"og:type\",\n        content: \"website\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        property: \"og:title\",\n        content: \"MOSB Gate Agent\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        property: \"og:description\",\n        content: \"LPO 인바운드 매칭 및 QR 코드 관리 시스템\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        property: \"og:site_name\",\n        content: \"MOSB Gate Agent\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        property: \"og:url\",\n        content: \"https://mosb-gate-agent.vercel.app\"\n    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(\"meta\", {\n        property: \"og:image\",\n        content: \"https://mosb-gate-agent.vercel.app/icons/icon-192x192.png\"\n    })), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Component, pageProps));\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,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QUU7UUFBRWMsUUFBUSxFQUFFLFVBQVU7UUFBRU4sT0FBTyxFQUFFLDJEQUEyRDtLQUFFLENBQUMsQ0FDNUgsZ0JBQ0RSLDBEQUFtQixDQUFDRyxTQUFTLEVBQUVDLFNBQVMsQ0FBQyxDQUMxQyxDQUFDO0FBQ0osQ0FBQyIsInNvdXJjZXMiOlsid2VicGFjazovL21vc2ItZ2F0ZS1hZ2VudC8uL3BhZ2VzL19hcHAudHN4PzJmYmUiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JztcclxuaW1wb3J0ICcuLi9zdHlsZXMvZ2xvYmFscy5jc3MnO1xyXG5pbXBvcnQgdHlwZSB7IEFwcFByb3BzIH0gZnJvbSAnbmV4dC9hcHAnO1xyXG5pbXBvcnQgSGVhZCBmcm9tICduZXh0L2hlYWQnO1xyXG5cclxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gQXBwKHsgQ29tcG9uZW50LCBwYWdlUHJvcHMgfTogQXBwUHJvcHMpIHtcclxuICByZXR1cm4gUmVhY3QuY3JlYXRlRWxlbWVudChSZWFjdC5GcmFnbWVudCwgbnVsbCxcclxuICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoSGVhZCwgbnVsbCxcclxuICAgICAgUmVhY3QuY3JlYXRlRWxlbWVudCgnbWV0YScsIHsgbmFtZTogXCJhcHBsaWNhdGlvbi1uYW1lXCIsIGNvbnRlbnQ6IFwiTU9TQiBHYXRlIEFnZW50XCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IG5hbWU6IFwiYXBwbGUtbW9iaWxlLXdlYi1hcHAtY2FwYWJsZVwiLCBjb250ZW50OiBcInllc1wiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdtZXRhJywgeyBuYW1lOiBcImFwcGxlLW1vYmlsZS13ZWItYXBwLXN0YXR1cy1iYXItc3R5bGVcIiwgY29udGVudDogXCJkZWZhdWx0XCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IG5hbWU6IFwiYXBwbGUtbW9iaWxlLXdlYi1hcHAtdGl0bGVcIiwgY29udGVudDogXCJNT1NCIEdhdGVcIiB9KSxcclxuICAgICAgUmVhY3QuY3JlYXRlRWxlbWVudCgnbWV0YScsIHsgbmFtZTogXCJkZXNjcmlwdGlvblwiLCBjb250ZW50OiBcIkxQTyDsnbjrsJTsmrTrk5wg66ek7LmtIOuwjyBRUiDsvZTrk5wg6rSA66asIOyLnOyKpO2FnFwiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdtZXRhJywgeyBuYW1lOiBcImZvcm1hdC1kZXRlY3Rpb25cIiwgY29udGVudDogXCJ0ZWxlcGhvbmU9bm8sIGRhdGU9bm8sIGVtYWlsPW5vLCBhZGRyZXNzPW5vXCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IG5hbWU6IFwibW9iaWxlLXdlYi1hcHAtY2FwYWJsZVwiLCBjb250ZW50OiBcInllc1wiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdtZXRhJywgeyBuYW1lOiBcIm1zYXBwbGljYXRpb24tY29uZmlnXCIsIGNvbnRlbnQ6IFwiL2ljb25zL2Jyb3dzZXJjb25maWcueG1sXCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IG5hbWU6IFwibXNhcHBsaWNhdGlvbi1UaWxlQ29sb3JcIiwgY29udGVudDogXCIjM2I4MmY2XCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IG5hbWU6IFwibXNhcHBsaWNhdGlvbi10YXAtaGlnaGxpZ2h0XCIsIGNvbnRlbnQ6IFwibm9cIiB9KSxcclxuICAgICAgUmVhY3QuY3JlYXRlRWxlbWVudCgnbWV0YScsIHsgbmFtZTogXCJ0aGVtZS1jb2xvclwiLCBjb250ZW50OiBcIiMzYjgyZjZcIiB9KSxcclxuICAgICAgUmVhY3QuY3JlYXRlRWxlbWVudCgnbGluaycsIHsgcmVsOiBcImFwcGxlLXRvdWNoLWljb25cIiwgaHJlZjogXCIvaWNvbnMvaWNvbi0xOTJ4MTkyLnBuZ1wiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdsaW5rJywgeyByZWw6IFwiaWNvblwiLCB0eXBlOiBcImltYWdlL3BuZ1wiLCBzaXplczogXCIzMngzMlwiLCBocmVmOiBcIi9pY29ucy9pY29uLTMyeDMyLnBuZ1wiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdsaW5rJywgeyByZWw6IFwiaWNvblwiLCB0eXBlOiBcImltYWdlL3BuZ1wiLCBzaXplczogXCIxNngxNlwiLCBocmVmOiBcIi9pY29ucy9pY29uLTE2eDE2LnBuZ1wiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdsaW5rJywgeyByZWw6IFwibWFuaWZlc3RcIiwgaHJlZjogXCIvbWFuaWZlc3QuanNvblwiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdsaW5rJywgeyByZWw6IFwibWFzay1pY29uXCIsIGhyZWY6IFwiL2ljb25zL3NhZmFyaS1waW5uZWQtdGFiLnN2Z1wiLCBjb2xvcjogXCIjM2I4MmY2XCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ2xpbmsnLCB7IHJlbDogXCJzaG9ydGN1dCBpY29uXCIsIGhyZWY6IFwiL2Zhdmljb24uaWNvXCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IG5hbWU6IFwidHdpdHRlcjpjYXJkXCIsIGNvbnRlbnQ6IFwic3VtbWFyeVwiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdtZXRhJywgeyBuYW1lOiBcInR3aXR0ZXI6dXJsXCIsIGNvbnRlbnQ6IFwiaHR0cHM6Ly9tb3NiLWdhdGUtYWdlbnQudmVyY2VsLmFwcFwiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdtZXRhJywgeyBuYW1lOiBcInR3aXR0ZXI6dGl0bGVcIiwgY29udGVudDogXCJNT1NCIEdhdGUgQWdlbnRcIiB9KSxcclxuICAgICAgUmVhY3QuY3JlYXRlRWxlbWVudCgnbWV0YScsIHsgbmFtZTogXCJ0d2l0dGVyOmRlc2NyaXB0aW9uXCIsIGNvbnRlbnQ6IFwiTFBPIOyduOuwlOyatOuTnCDrp6Tsua0g67CPIFFSIOy9lOuTnCDqtIDrpqwg7Iuc7Iqk7YWcXCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IG5hbWU6IFwidHdpdHRlcjppbWFnZVwiLCBjb250ZW50OiBcImh0dHBzOi8vbW9zYi1nYXRlLWFnZW50LnZlcmNlbC5hcHAvaWNvbnMvaWNvbi0xOTJ4MTkyLnBuZ1wiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdtZXRhJywgeyBuYW1lOiBcInR3aXR0ZXI6Y3JlYXRvclwiLCBjb250ZW50OiBcIkBtb3NiXCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IHByb3BlcnR5OiBcIm9nOnR5cGVcIiwgY29udGVudDogXCJ3ZWJzaXRlXCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IHByb3BlcnR5OiBcIm9nOnRpdGxlXCIsIGNvbnRlbnQ6IFwiTU9TQiBHYXRlIEFnZW50XCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IHByb3BlcnR5OiBcIm9nOmRlc2NyaXB0aW9uXCIsIGNvbnRlbnQ6IFwiTFBPIOyduOuwlOyatOuTnCDrp6Tsua0g67CPIFFSIOy9lOuTnCDqtIDrpqwg7Iuc7Iqk7YWcXCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IHByb3BlcnR5OiBcIm9nOnNpdGVfbmFtZVwiLCBjb250ZW50OiBcIk1PU0IgR2F0ZSBBZ2VudFwiIH0pLFxyXG4gICAgICBSZWFjdC5jcmVhdGVFbGVtZW50KCdtZXRhJywgeyBwcm9wZXJ0eTogXCJvZzp1cmxcIiwgY29udGVudDogXCJodHRwczovL21vc2ItZ2F0ZS1hZ2VudC52ZXJjZWwuYXBwXCIgfSksXHJcbiAgICAgIFJlYWN0LmNyZWF0ZUVsZW1lbnQoJ21ldGEnLCB7IHByb3BlcnR5OiBcIm9nOmltYWdlXCIsIGNvbnRlbnQ6IFwiaHR0cHM6Ly9tb3NiLWdhdGUtYWdlbnQudmVyY2VsLmFwcC9pY29ucy9pY29uLTE5MngxOTIucG5nXCIgfSlcclxuICAgICksXHJcbiAgICBSZWFjdC5jcmVhdGVFbGVtZW50KENvbXBvbmVudCwgcGFnZVByb3BzKVxyXG4gICk7XHJcbn0gIl0sIm5hbWVzIjpbIlJlYWN0IiwiSGVhZCIsIkFwcCIsIkNvbXBvbmVudCIsInBhZ2VQcm9wcyIsImNyZWF0ZUVsZW1lbnQiLCJGcmFnbWVudCIsIm5hbWUiLCJjb250ZW50IiwicmVsIiwiaHJlZiIsInR5cGUiLCJzaXplcyIsImNvbG9yIiwicHJvcGVydHkiXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./pages/_app.tsx\n");
 
+/***/ }),
 
+/***/ "./styles/globals.css":
+/*!****************************!*\
+  !*** ./styles/globals.css ***!
+  \****************************/
+/***/ (() => {
 
-function App({ Component , pageProps  }) {
-    return /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement((next_head__WEBPACK_IMPORTED_MODULE_1___default()), null, /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "application-name",
-        content: "MOSB Gate Agent"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "apple-mobile-web-app-capable",
-        content: "yes"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "apple-mobile-web-app-status-bar-style",
-        content: "default"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "apple-mobile-web-app-title",
-        content: "MOSB Gate"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "description",
-        content: "LPO 인바운드 매칭 및 QR 코드 관리 시스템"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "format-detection",
-        content: "telephone=no, date=no, email=no, address=no"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "mobile-web-app-capable",
-        content: "yes"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "msapplication-config",
-        content: "/icons/browserconfig.xml"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "msapplication-TileColor",
-        content: "#3b82f6"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "msapplication-tap-highlight",
-        content: "no"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "theme-color",
-        content: "#3b82f6"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("link", {
-        rel: "apple-touch-icon",
-        href: "/icons/icon-192x192.png"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("link", {
-        rel: "icon",
-        type: "image/png",
-        sizes: "32x32",
-        href: "/icons/icon-32x32.png"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("link", {
-        rel: "icon",
-        type: "image/png",
-        sizes: "16x16",
-        href: "/icons/icon-16x16.png"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("link", {
-        rel: "manifest",
-        href: "/manifest.json"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("link", {
-        rel: "mask-icon",
-        href: "/icons/safari-pinned-tab.svg",
-        color: "#3b82f6"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("link", {
-        rel: "shortcut icon",
-        href: "/favicon.ico"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "twitter:card",
-        content: "summary"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "twitter:url",
-        content: "https://mosb-gate-agent.vercel.app"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "twitter:title",
-        content: "MOSB Gate Agent"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "twitter:description",
-        content: "LPO 인바운드 매칭 및 QR 코드 관리 시스템"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "twitter:image",
-        content: "https://mosb-gate-agent.vercel.app/icons/icon-192x192.png"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        name: "twitter:creator",
-        content: "@mosb"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        property: "og:type",
-        content: "website"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        property: "og:title",
-        content: "MOSB Gate Agent"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        property: "og:description",
-        content: "LPO 인바운드 매칭 및 QR 코드 관리 시스템"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        property: "og:site_name",
-        content: "MOSB Gate Agent"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        property: "og:url",
-        content: "https://mosb-gate-agent.vercel.app"
-    }), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
-        property: "og:image",
-        content: "https://mosb-gate-agent.vercel.app/icons/icon-192x192.png"
-    })), /*#__PURE__*/ react__WEBPACK_IMPORTED_MODULE_0___default().createElement(Component, pageProps));
-}
 
 
 /***/ }),
 
-/***/ 968:
+/***/ "next/head":
+/*!****************************!*\
+  !*** external "next/head" ***!
+  \****************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("next/head");
 
 /***/ }),
 
-/***/ 6689:
+/***/ "react":
+/*!************************!*\
+  !*** external "react" ***!
+  \************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("react");
 
 /***/ })
@@ -139,7 +62,7 @@ module.exports = require("react");
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = (__webpack_exec__(5656));
+var __webpack_exports__ = (__webpack_exec__("./pages/_app.tsx"));
 module.exports = __webpack_exports__;
 
 })();

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파일 업로드 기능 테스트 - MOSB Entry System</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin: 10px 0 0 0;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        .test-section h3 {
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            font-size: 1.3em;
+        }
+        .upload-area {
+            border: 2px dashed #bdc3c7;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        .upload-area.uploaded {
+            border-color: #27ae60;
+            background: #e8f5e8;
+        }
+        .upload-area.error {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+        .file-input {
+            display: none;
+        }
+        .upload-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        .upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        .upload-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .file-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .file-info.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .file-info.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-results {
+            background: #e8f5e8;
+            border: 2px solid #27ae60;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .test-results h4 {
+            color: #27ae60;
+            margin: 0 0 15px 0;
+        }
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        .status-pass { color: #27ae60; font-weight: bold; }
+        .status-fail { color: #e74c3c; font-weight: bold; }
+        .status-pending { color: #f39c12; font-weight: bold; }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #ecf0f1;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📁 파일 업로드 기능 테스트</h1>
+            <p>MOSB Entry System의 서류 업로드 기능을 검증합니다</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div style="text-align: center; margin: 10px 0;">
+            진행률: <span id="progressText">0%</span>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 테스트 1: UAE Emirates ID 업로드</h3>
+            <div class="upload-area" id="uaeIdArea" onclick="selectFile('uaeId')">
+                <p>📁 UAE Emirates ID</p>
+                <p style="font-size: 0.9em; color: #7f8c8d;">유효한 UAE 신분증 (앞뒤면)</p>
+                <button class="upload-button" onclick="event.stopPropagation(); selectFile('uaeId')">
+                    파일 선택
+                </button>
+                <input type="file" id="uaeIdInput" class="file-input" accept="image/*,.pdf" onchange="handleFileUpload('uaeId', this.files[0])">
+                <div id="uaeIdInfo" class="file-info" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 테스트 2: Packing List 업로드</h3>
+            <div class="upload-area" id="packingListArea" onclick="selectFile('packingList')">
+                <p>📋 Packing List</p>
+                <p style="font-size: 0.9em; color: #7f8c8d;">화물 목록 및 상세 정보</p>
+                <button class="upload-button" onclick="event.stopPropagation(); selectFile('packingList')">
+                    파일 선택
+                </button>
+                <input type="file" id="packingListInput" class="file-input" accept="image/*,.pdf" onchange="handleFileUpload('packingList', this.files[0])">
+                <div id="packingListInfo" class="file-info" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📄 테스트 3: Driving License 업로드</h3>
+            <div class="upload-area" id="drivingLicenseArea" onclick="selectFile('drivingLicense')">
+                <p>📄 Driving License</p>
+                <p style="font-size: 0.9em; color: #7f8c8d;">운전면허증 (앞뒤면)</p>
+                <button class="upload-button" onclick="event.stopPropagation(); selectFile('drivingLicense')">
+                    파일 선택
+                </button>
+                <input type="file" id="drivingLicenseInput" class="file-input" accept="image/*,.pdf" onchange="handleFileUpload('drivingLicense', this.files[0])">
+                <div id="drivingLicenseInfo" class="file-info" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🛡️ 테스트 4: Safety Certificate 업로드 (선택사항)</h3>
+            <div class="upload-area" id="safetyCertificateArea" onclick="selectFile('safetyCertificate')">
+                <p>🛡️ Safety Certificate</p>
+                <p style="font-size: 0.9em; color: #7f8c8d;">안전인증서 (선택사항)</p>
+                <button class="upload-button" onclick="event.stopPropagation(); selectFile('safetyCertificate')">
+                    파일 선택
+                </button>
+                <input type="file" id="safetyCertificateInput" class="file-input" accept="image/*,.pdf" onchange="handleFileUpload('safetyCertificate', this.files[0])">
+                <div id="safetyCertificateInfo" class="file-info" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="upload-button" onclick="runAllTests()" style="font-size: 1.2em; padding: 15px 30px;">
+                🚀 모든 테스트 실행
+            </button>
+            <button class="upload-button" onclick="clearAllFiles()" style="background: #e74c3c; margin-left: 10px;">
+                🗑️ 모든 파일 초기화
+            </button>
+        </div>
+
+        <div class="test-results" id="testResults" style="display: none;">
+            <h4>📊 테스트 결과 요약</h4>
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let uploadedFiles = {
+            uaeId: null,
+            packingList: null,
+            drivingLicense: null,
+            safetyCertificate: null
+        };
+        let testResults = {};
+        let currentTest = 0;
+        const totalTests = 4;
+
+        // 파일 선택
+        function selectFile(documentType) {
+            document.getElementById(documentType + 'Input').click();
+        }
+
+        // 파일 업로드 처리
+        function handleFileUpload(documentType, file) {
+            if (!file) return;
+
+            // 파일 크기 검증 (10MB 제한)
+            if (file.size > 10 * 1024 * 1024) {
+                showFileError(documentType, '파일 크기는 10MB 이하여야 합니다.');
+                return;
+            }
+
+            // 파일 형식 검증
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+            if (!allowedTypes.includes(file.type)) {
+                showFileError(documentType, 'JPG, PNG, PDF 파일만 업로드 가능합니다.');
+                return;
+            }
+
+            // 파일 정보 표시
+            uploadedFiles[documentType] = file;
+            showFileSuccess(documentType, file);
+            updateProgress();
+        }
+
+        // 파일 성공 표시
+        function showFileSuccess(documentType, file) {
+            const area = document.getElementById(documentType + 'Area');
+            const info = document.getElementById(documentType + 'Info');
+            
+            area.className = 'upload-area uploaded';
+            info.className = 'file-info success';
+            info.style.display = 'block';
+            info.innerHTML = `
+                <strong>✅ 업로드 성공!</strong><br>
+                파일명: ${file.name}<br>
+                크기: ${(file.size / 1024 / 1024).toFixed(2)} MB<br>
+                형식: ${file.type}
+            `;
+            
+            // 버튼 텍스트 변경
+            const button = area.querySelector('button');
+            button.textContent = '파일 변경';
+        }
+
+        // 파일 오류 표시
+        function showFileError(documentType, errorMessage) {
+            const area = document.getElementById(documentType + 'Area');
+            const info = document.getElementById(documentType + 'Info');
+            
+            area.className = 'upload-area error';
+            info.className = 'file-info error';
+            info.style.display = 'block';
+            info.innerHTML = `<strong>❌ 오류:</strong> ${errorMessage}`;
+            
+            // 3초 후 오류 상태 제거
+            setTimeout(() => {
+                area.className = 'upload-area';
+                info.style.display = 'none';
+            }, 3000);
+        }
+
+        // 진행률 업데이트
+        function updateProgress() {
+            const uploadedCount = Object.values(uploadedFiles).filter(file => file !== null).length;
+            const percentage = Math.round((uploadedCount / totalTests) * 100);
+            
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage + '%';
+        }
+
+        // 모든 테스트 실행
+        function runAllTests() {
+            currentTest = 0;
+            testResults = {};
+            
+            // 진행률 초기화
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('progressText').textContent = '0%';
+            
+            // 각 파일 타입별 테스트
+            const documentTypes = ['uaeId', 'packingList', 'drivingLicense', 'safetyCertificate'];
+            
+            documentTypes.forEach((type, index) => {
+                setTimeout(() => {
+                    testFileUpload(type);
+                }, index * 500);
+            });
+            
+            // 결과 표시
+            setTimeout(() => {
+                showTestResults();
+            }, documentTypes.length * 500 + 1000);
+        }
+
+        // 파일 업로드 테스트
+        function testFileUpload(documentType) {
+            currentTest++;
+            const file = uploadedFiles[documentType];
+            
+            if (file) {
+                // 파일 검증 테스트
+                const sizeTest = file.size <= 10 * 1024 * 1024;
+                const typeTest = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'].includes(file.type);
+                
+                testResults[documentType] = {
+                    uploaded: true,
+                    sizeValid: sizeTest,
+                    typeValid: typeTest,
+                    fileName: file.name,
+                    fileSize: file.size,
+                    fileType: file.type
+                };
+            } else {
+                testResults[documentType] = {
+                    uploaded: false,
+                    sizeValid: false,
+                    typeValid: false,
+                    fileName: null,
+                    fileSize: null,
+                    fileType: null
+                };
+            }
+            
+            updateProgress();
+        }
+
+        // 테스트 결과 표시
+        function showTestResults() {
+            const resultsDiv = document.getElementById('testResults');
+            const contentDiv = document.getElementById('resultsContent');
+            
+            const passedTests = Object.values(testResults).filter(result => result.uploaded && result.sizeValid && result.typeValid).length;
+            const totalTests = Object.keys(testResults).length;
+            const successRate = Math.round((passedTests / totalTests) * 100);
+            
+            let resultsHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h5>전체 결과: ${passedTests}/${totalTests} 테스트 통과 (${successRate}%)</h5>
+                </div>
+            `;
+            
+            const documentNames = {
+                'uaeId': 'UAE Emirates ID',
+                'packingList': 'Packing List',
+                'drivingLicense': 'Driving License',
+                'safetyCertificate': 'Safety Certificate'
+            };
+            
+            for (const [documentType, result] of Object.entries(testResults)) {
+                const statusClass = result.uploaded && result.sizeValid && result.typeValid ? 'status-pass' : 'status-fail';
+                const statusText = result.uploaded && result.sizeValid && result.typeValid ? '통과' : '실패';
+                
+                resultsHTML += `
+                    <div class="test-item">
+                        <span>${documentNames[documentType]}</span>
+                        <span class="${statusClass}">${statusText}</span>
+                    </div>
+                `;
+                
+                if (result.uploaded) {
+                    resultsHTML += `
+                        <div style="padding-left: 20px; font-size: 0.9em; color: #666;">
+                            파일: ${result.fileName}<br>
+                            크기: ${(result.fileSize / 1024 / 1024).toFixed(2)} MB<br>
+                            형식: ${result.fileType}
+                        </div>
+                    `;
+                }
+            }
+            
+            contentDiv.innerHTML = resultsHTML;
+            resultsDiv.style.display = 'block';
+        }
+
+        // 모든 파일 초기화
+        function clearAllFiles() {
+            uploadedFiles = {
+                uaeId: null,
+                packingList: null,
+                drivingLicense: null,
+                safetyCertificate: null
+            };
+            
+            const documentTypes = ['uaeId', 'packingList', 'drivingLicense', 'safetyCertificate'];
+            
+            documentTypes.forEach(type => {
+                const area = document.getElementById(type + 'Area');
+                const info = document.getElementById(type + 'Info');
+                const input = document.getElementById(type + 'Input');
+                
+                area.className = 'upload-area';
+                info.style.display = 'none';
+                input.value = '';
+                
+                const button = area.querySelector('button');
+                button.textContent = '파일 선택';
+            });
+            
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('progressText').textContent = '0%';
+            document.getElementById('testResults').style.display = 'none';
+        }
+
+        // 페이지 로드 시 초기화
+        window.onload = function() {
+            updateProgress();
+        };
+    </script>
+</body>
+</html> 

@@ -1,5 +1,6 @@
 // __tests__/MOSBEntry.test.tsx - MOSB Entry System 테스트
 
+import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
@@ -7,7 +8,8 @@ import '@testing-library/jest-dom';
 // 컴포넌트 임포트
 import { MOSBEntryBot } from '../components/organisms/MOSBEntryBot';
 import { LPOFinder } from '../components/organisms/LPOFinder'; 
-import { MOSBEntryService } from '../services/MOSBEntryService';
+import MOSBEntryService from '../services/MOSBEntryService';
+import { DriverApplication } from '../types/mosb';
 
 // Mock 서비스
 jest.mock('../services/MOSBEntryService');
@@ -17,9 +19,9 @@ describe('MOSB Entry System', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Mock implementation 초기화
-    mockMOSBService.prototype.validatePhoneNumber = jest.fn(() => true);
-    mockMOSBService.prototype.validateFile = jest.fn(() => ({ valid: true }));
-    mockMOSBService.prototype.validateLPONumber = jest.fn(() => true);
+    mockMOSBService.prototype.validatePhoneNumber = jest.fn((phone: string) => true);
+    mockMOSBService.prototype.validateFile = jest.fn((file: File, documentType: string) => ({ valid: true }));
+    mockMOSBService.prototype.validateLPONumber = jest.fn((lpoNumber: string) => true);
   });
 
   describe('MOSBEntryBot Component', () => {
@@ -178,7 +180,8 @@ describe('MOSB Entry System', () => {
           zone: 'Zone 3',
           contact: '+971-50-123-4567',
           instructions: ['Safety helmet required'],
-          operatingHours: '06:00 - 22:00'
+          operatingHours: '06:00 - 22:00',
+          gpsCoordinate: [24.4539, 54.3773]
         },
         lastUpdated: new Date()
       };
@@ -237,7 +240,8 @@ describe('MOSB Entry System', () => {
           zone: 'Zone 3',
           contact: '+971-50-123-4567',
           instructions: [],
-          operatingHours: '06:00 - 22:00'
+          operatingHours: '06:00 - 22:00',
+          gpsCoordinate: [24.4539, 54.3773]
         },
         lastUpdated: new Date()
       };

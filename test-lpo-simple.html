@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPO API 간단 테스트</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .test-button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .test-button:hover { background: #0056b3; }
+        .result { margin: 15px 0; padding: 15px; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 LPO API 간단 테스트</h1>
+        <p>이 페이지는 LPO API가 제대로 작동하는지 테스트합니다.</p>
+        
+        <h2>1. 기본 API 연결 테스트</h2>
+        <button class="test-button" onclick="testBasicAPI()">기본 API 테스트</button>
+        <div id="basicResult"></div>
+        
+        <h2>2. LPO 위치 조회 테스트</h2>
+        <button class="test-button" onclick="testLPOLocation()">LPO 위치 조회</button>
+        <div id="lpoResult"></div>
+        
+        <h2>3. 존재하지 않는 LPO 테스트</h2>
+        <button class="test-button" onclick="testInvalidLPO()">존재하지 않는 LPO</button>
+        <div id="invalidResult"></div>
+        
+        <h2>4. 잘못된 형식 테스트</h2>
+        <button class="test-button" onclick="testWrongFormat()">잘못된 형식</button>
+        <div id="formatResult"></div>
+    </div>
+
+    <script>
+        async function testBasicAPI() {
+            const resultDiv = document.getElementById('basicResult');
+            resultDiv.innerHTML = '<p>테스트 중...</p>';
+            
+            try {
+                                 const response = await fetch('http://localhost:3001/api/test-lpo');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ 기본 API 연결 성공!</h3>
+                        <p><strong>메시지:</strong> ${data.message}</p>
+                        <p><strong>시간:</strong> ${data.timestamp}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <h3>❌ 기본 API 연결 실패</h3>
+                        <p><strong>상태:</strong> ${response.status}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h3>❌ 네트워크 오류</h3>
+                    <p><strong>오류:</strong> ${error.message}</p>
+                    <p>개발 서버가 실행 중인지 확인하세요: <code>npm run dev</code></p>
+                `;
+            }
+        }
+
+        async function testLPOLocation() {
+            const resultDiv = document.getElementById('lpoResult');
+            resultDiv.innerHTML = '<p>테스트 중...</p>';
+            
+            try {
+                                 const response = await fetch('http://localhost:3001/api/lpo/location/LPO-2024-001234');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ LPO 위치 조회 성공!</h3>
+                        <p><strong>LPO 번호:</strong> ${data.lpoNumber}</p>
+                        <p><strong>건물:</strong> ${data.location.building}</p>
+                        <p><strong>구역:</strong> ${data.location.zone}</p>
+                        <p><strong>연락처:</strong> ${data.location.contact}</p>
+                        <p><strong>운영시간:</strong> ${data.location.operatingHours}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <h3>❌ LPO 위치 조회 실패</h3>
+                        <p><strong>상태:</strong> ${response.status}</p>
+                        <p><strong>오류:</strong> ${data.error}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h3>❌ 네트워크 오류</h3>
+                    <p><strong>오류:</strong> ${error.message}</p>
+                `;
+            }
+        }
+
+        async function testInvalidLPO() {
+            const resultDiv = document.getElementById('invalidResult');
+            resultDiv.innerHTML = '<p>테스트 중...</p>';
+            
+            try {
+                                 const response = await fetch('http://localhost:3001/api/lpo/location/LPO-2024-999999');
+                const data = await response.json();
+                
+                if (response.status === 404) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ 올바른 404 응답!</h3>
+                        <p><strong>상태:</strong> ${response.status}</p>
+                        <p><strong>메시지:</strong> ${data.error}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <h3>❌ 예상과 다른 응답</h3>
+                        <p><strong>상태:</strong> ${response.status}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h3>❌ 네트워크 오류</h3>
+                    <p><strong>오류:</strong> ${error.message}</p>
+                `;
+            }
+        }
+
+        async function testWrongFormat() {
+            const resultDiv = document.getElementById('formatResult');
+            resultDiv.innerHTML = '<p>테스트 중...</p>';
+            
+            try {
+                                 const response = await fetch('http://localhost:3001/api/lpo/location/INVALID-FORMAT');
+                const data = await response.json();
+                
+                if (response.status === 400) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ 올바른 400 응답!</h3>
+                        <p><strong>상태:</strong> ${response.status}</p>
+                        <p><strong>메시지:</strong> ${data.error}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <h3>❌ 예상과 다른 응답</h3>
+                        <p><strong>상태:</strong> ${response.status}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h3>❌ 네트워크 오류</h3>
+                    <p><strong>오류:</strong> ${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { DriverApplication } from '../../types/mosb';
-import { MOSBEntryService } from '../../services/MOSBEntryService';
+import MOSBEntryService from '../../services/MOSBEntryService';
 
 interface MOSBEntryBotProps {
   onApplicationSubmit?: (application: DriverApplication) => void;
@@ -24,8 +24,22 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [uploadedFiles, setUploadedFiles] = useState<Record<string, File | null>>({
+    uaeId: null,
+    drivingLicense: null,
+    packingList: null,
+    safetyCertificate: null
+  });
   
   const mosbService = new MOSBEntryService();
+  
+  // 파일 업로드 refs
+  const fileRefs = {
+    uaeId: useRef<HTMLInputElement>(null),
+    drivingLicense: useRef<HTMLInputElement>(null),
+    packingList: useRef<HTMLInputElement>(null),
+    safetyCertificate: useRef<HTMLInputElement>(null)
+  };
 
   // 에러 처리
   const handleError = (error: string, field?: string) => {
@@ -57,6 +71,26 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  // 서류 업로드 검증
+  const validateDocuments = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!uploadedFiles.uaeId) {
+      newErrors.documents = 'UAE Emirates ID를 업로드해주세요.';
+    }
+    
+    if (!uploadedFiles.drivingLicense) {
+      newErrors.documents = '운전면허증을 업로드해주세요.';
+    }
+    
+    if (!uploadedFiles.packingList) {
+      newErrors.documents = '포장명세서를 업로드해주세요.';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   // 기본 정보 입력 완료
   const handleInfoSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,8 +100,47 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
     }
   };
 
+  // 파일 업로드 처리
+  const handleFileUpload = (documentType: string, file: File) => {
+    // 파일 크기 검증 (10MB 제한)
+    if (file.size > 10 * 1024 * 1024) {
+      handleError('파일 크기는 10MB 이하여야 합니다.', 'documents');
+      return;
+    }
+    
+    // 파일 형식 검증
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+    if (!allowedTypes.includes(file.type)) {
+      handleError('JPG, PNG, PDF 파일만 업로드 가능합니다.', 'documents');
+      return;
+    }
+    
+    setUploadedFiles(prev => ({ ...prev, [documentType]: file }));
+    setApplication(prev => ({
+      ...prev,
+      documents: {
+        ...prev.documents!,
+        [documentType]: true
+      }
+    }));
+    
+    // 에러 메시지 제거
+    if (errors.documents) {
+      setErrors(prev => ({ ...prev, documents: '' }));
+    }
+  };
+
+  // 파일 선택 버튼 클릭
+  const handleFileSelect = (documentType: string) => {
+    fileRefs[documentType as keyof typeof fileRefs]?.current?.click();
+  };
+
   // 최종 제출
   const handleFinalSubmit = async () => {
+    if (!validateDocuments()) {
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
@@ -211,36 +284,130 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
         }, "다음 단계")
       ),
 
-      // Step 2: 서류 업로드 (간단한 버전)
+      // Step 2: 서류 업로드 (실제 파일 업로드 기능)
       currentStep === 'documents' && React.createElement('div', { className: "space-y-4" },
         React.createElement('h3', { className: "text-lg font-semibold mb-4" }, "서류 업로드"),
         React.createElement('p', { className: "text-gray-600" }, "필요한 서류들을 업로드해주세요."),
+        
+        // 에러 메시지 표시
+        errors.documents && React.createElement('div', { className: "p-3 bg-red-50 border border-red-200 rounded-lg" },
+          React.createElement('p', { className: "text-red-600 text-sm" }, errors.documents)
+        ),
+        
         React.createElement('div', { className: "space-y-4" },
-          React.createElement('div', { className: "p-4 border-2 border-dashed border-gray-300 rounded-lg text-center" },
+          // UAE Emirates ID
+          React.createElement('div', { 
+            className: `p-4 border-2 border-dashed rounded-lg text-center ${
+              uploadedFiles.uaeId ? 'border-green-300 bg-green-50' : 'border-gray-300'
+            }`
+          },
             React.createElement('p', { className: "text-gray-500" }, "📁 UAE Emirates ID"),
             React.createElement('p', { className: "text-sm text-gray-400" }, "유효한 UAE 신분증 (앞뒤면)"),
+            uploadedFiles.uaeId && React.createElement('p', { className: "text-sm text-green-600 mt-2" }, 
+              `✅ ${uploadedFiles.uaeId.name}`
+            ),
             React.createElement('button', {
               type: "button",
-              className: "mt-2 px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-            }, "파일 선택")
+              onClick: () => handleFileSelect('uaeId'),
+              className: "mt-2 px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+            }, uploadedFiles.uaeId ? "파일 변경" : "파일 선택"),
+            React.createElement('input', {
+              ref: fileRefs.uaeId,
+              type: "file",
+              accept: "image/*,.pdf",
+              style: { display: 'none' },
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                const file = e.target.files?.[0];
+                if (file) handleFileUpload('uaeId', file);
+              }
+            })
           ),
-          React.createElement('div', { className: "p-4 border-2 border-dashed border-gray-300 rounded-lg text-center" },
+          
+          // Packing List
+          React.createElement('div', { 
+            className: `p-4 border-2 border-dashed rounded-lg text-center ${
+              uploadedFiles.packingList ? 'border-green-300 bg-green-50' : 'border-gray-300'
+            }`
+          },
             React.createElement('p', { className: "text-gray-500" }, "📋 Packing List"),
             React.createElement('p', { className: "text-sm text-gray-400" }, "화물 목록 및 상세 정보"),
+            uploadedFiles.packingList && React.createElement('p', { className: "text-sm text-green-600 mt-2" }, 
+              `✅ ${uploadedFiles.packingList.name}`
+            ),
             React.createElement('button', {
               type: "button",
-              className: "mt-2 px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-            }, "파일 선택")
+              onClick: () => handleFileSelect('packingList'),
+              className: "mt-2 px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+            }, uploadedFiles.packingList ? "파일 변경" : "파일 선택"),
+            React.createElement('input', {
+              ref: fileRefs.packingList,
+              type: "file",
+              accept: "image/*,.pdf",
+              style: { display: 'none' },
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                const file = e.target.files?.[0];
+                if (file) handleFileUpload('packingList', file);
+              }
+            })
           ),
-          React.createElement('div', { className: "p-4 border-2 border-dashed border-gray-300 rounded-lg text-center" },
+          
+          // Driving License
+          React.createElement('div', { 
+            className: `p-4 border-2 border-dashed rounded-lg text-center ${
+              uploadedFiles.drivingLicense ? 'border-green-300 bg-green-50' : 'border-gray-300'
+            }`
+          },
             React.createElement('p', { className: "text-gray-500" }, "📄 Driving License"),
             React.createElement('p', { className: "text-sm text-gray-400" }, "운전면허증 (앞뒤면)"),
+            uploadedFiles.drivingLicense && React.createElement('p', { className: "text-sm text-green-600 mt-2" }, 
+              `✅ ${uploadedFiles.drivingLicense.name}`
+            ),
             React.createElement('button', {
               type: "button",
+              onClick: () => handleFileSelect('drivingLicense'),
+              className: "mt-2 px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+            }, uploadedFiles.drivingLicense ? "파일 변경" : "파일 선택"),
+            React.createElement('input', {
+              ref: fileRefs.drivingLicense,
+              type: "file",
+              accept: "image/*,.pdf",
+              style: { display: 'none' },
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                const file = e.target.files?.[0];
+                if (file) handleFileUpload('drivingLicense', file);
+              }
+            })
+          ),
+          
+          // Safety Certificate (선택사항)
+          React.createElement('div', { 
+            className: `p-4 border-2 border-dashed rounded-lg text-center ${
+              uploadedFiles.safetyCertificate ? 'border-green-300 bg-green-50' : 'border-gray-300'
+            }`
+          },
+            React.createElement('p', { className: "text-gray-500" }, "🛡️ Safety Certificate"),
+            React.createElement('p', { className: "text-sm text-gray-400" }, "안전인증서 (선택사항)"),
+            uploadedFiles.safetyCertificate && React.createElement('p', { className: "text-sm text-green-600 mt-2" }, 
+              `✅ ${uploadedFiles.safetyCertificate.name}`
+            ),
+            React.createElement('button', {
+              type: "button",
+              onClick: () => handleFileSelect('safetyCertificate'),
               className: "mt-2 px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
-            }, "파일 선택")
+            }, uploadedFiles.safetyCertificate ? "파일 변경" : "파일 선택"),
+            React.createElement('input', {
+              ref: fileRefs.safetyCertificate,
+              type: "file",
+              accept: "image/*,.pdf",
+              style: { display: 'none' },
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                const file = e.target.files?.[0];
+                if (file) handleFileUpload('safetyCertificate', file);
+              }
+            })
           )
         ),
+        
         React.createElement('div', { className: "flex space-x-4" },
           React.createElement('button', {
             type: "button",
@@ -264,7 +431,16 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
             React.createElement('p', null, "운전자: ", application.driverName),
             React.createElement('p', null, "전화번호: ", application.phone),
             React.createElement('p', null, "회사명: ", application.company),
-                            React.createElement('p', null, "차량종류: ", application.vehicleType)
+            React.createElement('p', null, "차량종류: ", application.vehicleType)
+          )
+        ),
+        React.createElement('div', { className: "bg-gray-50 p-4 rounded-lg" },
+          React.createElement('h4', { className: "font-semibold mb-2" }, "업로드된 서류"),
+          React.createElement('div', { className: "space-y-1 text-sm" },
+            uploadedFiles.uaeId && React.createElement('p', { className: "text-green-600" }, "✅ UAE Emirates ID: ", uploadedFiles.uaeId.name),
+            uploadedFiles.drivingLicense && React.createElement('p', { className: "text-green-600" }, "✅ Driving License: ", uploadedFiles.drivingLicense.name),
+            uploadedFiles.packingList && React.createElement('p', { className: "text-green-600" }, "✅ Packing List: ", uploadedFiles.packingList.name),
+            uploadedFiles.safetyCertificate && React.createElement('p', { className: "text-green-600" }, "✅ Safety Certificate: ", uploadedFiles.safetyCertificate.name)
           )
         ),
         React.createElement('div', { className: "flex space-x-4" },
@@ -299,6 +475,12 @@ export const MOSBEntryBot: React.FC<MOSBEntryBotProps> = ({
                 packingList: false,
                 safetyCertificate: false
               }
+            });
+            setUploadedFiles({
+              uaeId: null,
+              drivingLicense: null,
+              packingList: null,
+              safetyCertificate: null
             });
             setErrors({});
           },
