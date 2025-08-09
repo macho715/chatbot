@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITREP API Test Console - HVDC Project</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #229954;
+        }
+        .btn-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .response-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .response-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .response-error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .response-info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-online {
+            background-color: #27ae60;
+        }
+        .status-offline {
+            background-color: #e74c3c;
+        }
+        .status-testing {
+            background-color: #f39c12;
+        }
+        .curl-command {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            background-color: #f8f9fa;
+        }
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            margin-bottom: -1px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚢 SITREP API Test Console</h1>
+            <p>HVDC Project - MOSB System Integration Testing</p>
+            <div>
+                <span class="status-indicator" id="connectionStatus"></span>
+                <span id="connectionText">Testing connection...</span>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('basic')">Basic Test</div>
+            <div class="tab" onclick="switchTab('specialized')">Specialized Tests</div>
+            <div class="tab" onclick="switchTab('debug')">Debug Tools</div>
+            <div class="tab" onclick="switchTab('curl')">cURL Commands</div>
+        </div>
+
+        <!-- Basic Test Tab -->
+        <div id="basic" class="tab-content active">
+            <div class="test-section">
+                <h3>Basic SITREP Submission</h3>
+                <div class="form-group">
+                    <label for="apiKey">API Key:</label>
+                    <input type="password" id="apiKey" placeholder="Enter your Google Apps Script API key">
+                </div>
+                <div class="form-group">
+                    <label for="summary">Summary:</label>
+                    <textarea id="summary" placeholder="Enter SITREP summary">[ACTION] SITREP 테스트 기록</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="keywords">Keywords (comma-separated):</label>
+                    <input type="text" id="keywords" value="SITREP,AGI,MOSB,HVDC">
+                </div>
+                <div class="form-group">
+                    <label for="groupName">Group Name:</label>
+                    <input type="text" id="groupName" value="[HVDC] Project Lightning">
+                </div>
+                <div class="form-group">
+                    <label for="slaBreaches">SLA Breaches:</label>
+                    <input type="number" id="slaBreaches" value="0" min="0">
+                </div>
+                <div class="button-group">
+                    <button class="btn-primary" onclick="submitBasicSITREP()">Submit SITREP</button>
+                    <button class="btn-success" onclick="testConnection()">Test Connection</button>
+                </div>
+                <div id="basicResponse" class="response-area" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Specialized Tests Tab -->
+        <div id="specialized" class="tab-content">
+            <div class="test-section">
+                <h3>Logistics SITREP</h3>
+                <div class="form-group">
+                    <label for="logisticsSummary">Summary:</label>
+                    <textarea id="logisticsSummary" placeholder="Enter logistics summary">Container delivery completed successfully</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="logisticsKeywords">Additional Keywords:</label>
+                    <input type="text" id="logisticsKeywords" value="CONTAINER,DELIVERY">
+                </div>
+                <button class="btn-primary" onclick="submitLogisticsSITREP()">Submit Logistics SITREP</button>
+                <div id="logisticsResponse" class="response-area" style="display: none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>Container SITREP</h3>
+                <div class="form-group">
+                    <label for="containerId">Container ID:</label>
+                    <input type="text" id="containerId" value="CONT-001">
+                </div>
+                <div class="form-group">
+                    <label for="containerStatus">Status:</label>
+                    <textarea id="containerStatus" placeholder="Enter container status">Loading delayed due to weather conditions</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="containerIssues">Issues (comma-separated):</label>
+                    <input type="text" id="containerIssues" value="WEATHER_DELAY,LOADING_ISSUE">
+                </div>
+                <button class="btn-primary" onclick="submitContainerSITREP()">Submit Container SITREP</button>
+                <div id="containerResponse" class="response-area" style="display: none;"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>Weather SITREP</h3>
+                <div class="form-group">
+                    <label for="weatherCondition">Weather Condition:</label>
+                    <input type="text" id="weatherCondition" value="Storm warning">
+                </div>
+                <div class="form-group">
+                    <label for="weatherImpact">Impact:</label>
+                    <textarea id="weatherImpact" placeholder="Enter weather impact">Port operations suspended</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="etaDelay">ETA Delay (hours):</label>
+                    <input type="number" id="etaDelay" value="36" min="0">
+                </div>
+                <button class="btn-primary" onclick="submitWeatherSITREP()">Submit Weather SITREP</button>
+                <div id="weatherResponse" class="response-area" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Debug Tools Tab -->
+        <div id="debug" class="tab-content">
+            <div class="test-section">
+                <h3>API Configuration</h3>
+                <div class="form-group">
+                    <label for="apiUrl">API URL:</label>
+                    <input type="text" id="apiUrl" value="https://script.google.com/macros/s/AKfycbwTXeX36cR5tKd8GBP07-_EAKzedqFGhrdOZFPSmoFJMw9vMFfM5eFrljzQPDYj-KrR/exec">
+                </div>
+                <div class="form-group">
+                    <label for="retryAttempts">Retry Attempts:</label>
+                    <input type="number" id="retryAttempts" value="3" min="1" max="10">
+                </div>
+                <div class="form-group">
+                    <label for="timeoutMs">Timeout (ms):</label>
+                    <input type="number" id="timeoutMs" value="10000" min="1000" max="60000">
+                </div>
+                <button class="btn-warning" onclick="updateConfig()">Update Configuration</button>
+                <button class="btn-success" onclick="getConfig()">Get Current Config</button>
+            </div>
+
+            <div class="test-section">
+                <h3>Connection Diagnostics</h3>
+                <button class="btn-primary" onclick="runDiagnostics()">Run Full Diagnostics</button>
+                <button class="btn-danger" onclick="clearResponses()">Clear All Responses</button>
+                <div id="diagnosticsResponse" class="response-area" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- cURL Commands Tab -->
+        <div id="curl" class="tab-content">
+            <div class="test-section">
+                <h3>Generated cURL Commands</h3>
+                <p>Use these commands to test the API from terminal:</p>
+                
+                <h4>Basic SITREP Test:</h4>
+                <div class="curl-command" id="basicCurl"></div>
+                
+                <h4>Logistics SITREP Test:</h4>
+                <div class="curl-command" id="logisticsCurl"></div>
+                
+                <h4>Container SITREP Test:</h4>
+                <div class="curl-command" id="containerCurl"></div>
+                
+                <h4>Weather SITREP Test:</h4>
+                <div class="curl-command" id="weatherCurl"></div>
+                
+                <button class="btn-primary" onclick="generateCurlCommands()">Generate cURL Commands</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let sitrepService = null;
+        let currentConfig = {
+            apiUrl: 'https://script.google.com/macros/s/AKfycbwTXeX36cR5tKd8GBP07-_EAKzedqFGHRdOZFPSmoFJMw9vMFfM5eFrljzQPDYj-KrR/exec',
+            apiKey: '',
+            retryAttempts: 3,
+            timeoutMs: 10000
+        };
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content and activate tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Initialize service
+        function initializeService() {
+            const apiKey = document.getElementById('apiKey').value;
+            if (!apiKey) {
+                showResponse('basicResponse', 'Please enter an API key first', 'error');
+                return false;
+            }
+            
+            currentConfig.apiKey = apiKey;
+            sitrepService = new SITREPService(currentConfig);
+            return true;
+        }
+
+        // SITREP Service Class (simplified for browser)
+        class SITREPService {
+            constructor(config) {
+                this.config = config;
+            }
+
+            async submitSITREP(sitrepData) {
+                const payload = {
+                    date_gst: sitrepData.date_gst || new Date().toISOString().slice(0, 19).replace('T', ' '),
+                    group_name: sitrepData.group_name || '[HVDC] Project Lightning',
+                    summary: sitrepData.summary || '[ACTION] SITREP submitted via MOSB System',
+                    top_keywords: sitrepData.top_keywords || ['MOSB', 'HVDC', 'LOGISTICS'],
+                    sla_breaches: sitrepData.sla_breaches || 0,
+                    attachments: sitrepData.attachments || [],
+                    ...sitrepData
+                };
+
+                return this.makeAPICall(payload);
+            }
+
+            async makeAPICall(payload) {
+                let lastError = null;
+
+                for (let attempt = 1; attempt <= this.config.retryAttempts; attempt++) {
+                    try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), this.config.timeoutMs);
+
+                        const response = await fetch(`${this.config.apiUrl}?api_key=${this.config.apiKey}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(payload),
+                            signal: controller.signal
+                        });
+
+                        clearTimeout(timeoutId);
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+
+                        const result = await response.json();
+                        
+                        return {
+                            success: true,
+                            message: 'SITREP submitted successfully',
+                            timestamp: new Date().toISOString(),
+                            data: result
+                        };
+
+                    } catch (error) {
+                        lastError = error;
+                        
+                        if (attempt < this.config.retryAttempts) {
+                            await this.delay(Math.pow(2, attempt) * 1000);
+                            continue;
+                        }
+                    }
+                }
+
+                return {
+                    success: false,
+                    message: `Failed to submit SITREP after ${this.config.retryAttempts} attempts: ${lastError?.message}`,
+                    timestamp: new Date().toISOString()
+                };
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            async testConnection() {
+                try {
+                    const result = await this.submitSITREP({
+                        summary: '[TEST] API connectivity test',
+                        top_keywords: ['TEST', 'CONNECTIVITY']
+                    });
+                    return result.success;
+                } catch {
+                    return false;
+                }
+            }
+        }
+
+        // Test functions
+        async function testConnection() {
+            if (!initializeService()) return;
+            
+            updateConnectionStatus('testing', 'Testing connection...');
+            
+            try {
+                const isConnected = await sitrepService.testConnection();
+                if (isConnected) {
+                    updateConnectionStatus('online', 'Connected successfully');
+                    showResponse('basicResponse', 'Connection test successful!', 'success');
+                } else {
+                    updateConnectionStatus('offline', 'Connection failed');
+                    showResponse('basicResponse', 'Connection test failed. Check API key and URL.', 'error');
+                }
+            } catch (error) {
+                updateConnectionStatus('offline', 'Connection error');
+                showResponse('basicResponse', `Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        async function submitBasicSITREP() {
+            if (!initializeService()) return;
+            
+            const summary = document.getElementById('summary').value;
+            const keywords = document.getElementById('keywords').value.split(',').map(k => k.trim());
+            const groupName = document.getElementById('groupName').value;
+            const slaBreaches = parseInt(document.getElementById('slaBreaches').value);
+
+            try {
+                const result = await sitrepService.submitSITREP({
+                    summary,
+                    top_keywords: keywords,
+                    group_name: groupName,
+                    sla_breaches: slaBreaches
+                });
+
+                showResponse('basicResponse', JSON.stringify(result, null, 2), result.success ? 'success' : 'error');
+            } catch (error) {
+                showResponse('basicResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function submitLogisticsSITREP() {
+            if (!initializeService()) return;
+            
+            const summary = document.getElementById('logisticsSummary').value;
+            const keywords = document.getElementById('logisticsKeywords').value.split(',').map(k => k.trim());
+
+            try {
+                const result = await sitrepService.submitSITREP({
+                    summary: `[LOGISTICS] ${summary}`,
+                    top_keywords: ['LOGISTICS', 'MOSB', 'HVDC', ...keywords],
+                    sla_breaches: 0,
+                    attachments: []
+                });
+
+                showResponse('logisticsResponse', JSON.stringify(result, null, 2), result.success ? 'success' : 'error');
+            } catch (error) {
+                showResponse('logisticsResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function submitContainerSITREP() {
+            if (!initializeService()) return;
+            
+            const containerId = document.getElementById('containerId').value;
+            const status = document.getElementById('containerStatus').value;
+            const issues = document.getElementById('containerIssues').value.split(',').map(k => k.trim());
+
+            try {
+                const result = await sitrepService.submitSITREP({
+                    summary: `[CONTAINER] Container ${containerId}: ${status}`,
+                    top_keywords: ['CONTAINER', 'STOWAGE', containerId, ...issues],
+                    sla_breaches: issues.length > 0 ? 1 : 0
+                });
+
+                showResponse('containerResponse', JSON.stringify(result, null, 2), result.success ? 'success' : 'error');
+            } catch (error) {
+                showResponse('containerResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function submitWeatherSITREP() {
+            if (!initializeService()) return;
+            
+            const weatherCondition = document.getElementById('weatherCondition').value;
+            const impact = document.getElementById('weatherImpact').value;
+            const etaDelay = parseInt(document.getElementById('etaDelay').value);
+
+            try {
+                const keywords = ['WEATHER', 'ETA', weatherCondition];
+                if (etaDelay) {
+                    keywords.push(`DELAY_${etaDelay}h`);
+                }
+
+                const result = await sitrepService.submitSITREP({
+                    summary: `[WEATHER] Weather: ${weatherCondition} - ${impact}`,
+                    top_keywords: keywords,
+                    sla_breaches: etaDelay && etaDelay > 24 ? 1 : 0
+                });
+
+                showResponse('weatherResponse', JSON.stringify(result, null, 2), result.success ? 'success' : 'error');
+            } catch (error) {
+                showResponse('weatherResponse', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Utility functions
+        function showResponse(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `response-area response-${type}`;
+            element.style.display = 'block';
+        }
+
+        function updateConnectionStatus(status, text) {
+            const statusElement = document.getElementById('connectionStatus');
+            const textElement = document.getElementById('connectionText');
+            
+            statusElement.className = `status-indicator status-${status}`;
+            textElement.textContent = text;
+        }
+
+        function updateConfig() {
+            currentConfig.retryAttempts = parseInt(document.getElementById('retryAttempts').value);
+            currentConfig.timeoutMs = parseInt(document.getElementById('timeoutMs').value);
+            currentConfig.apiUrl = document.getElementById('apiUrl').value;
+            
+            if (sitrepService) {
+                sitrepService.config = currentConfig;
+            }
+            
+            showResponse('diagnosticsResponse', 'Configuration updated successfully!', 'success');
+        }
+
+        function getConfig() {
+            const config = sitrepService ? sitrepService.config : currentConfig;
+            showResponse('diagnosticsResponse', JSON.stringify(config, null, 2), 'info');
+        }
+
+        async function runDiagnostics() {
+            if (!initializeService()) return;
+            
+            let diagnostics = '=== SITREP API Diagnostics ===\n\n';
+            
+            // Test connection
+            diagnostics += '1. Testing API connection...\n';
+            const isConnected = await sitrepService.testConnection();
+            diagnostics += `   Result: ${isConnected ? 'SUCCESS' : 'FAILED'}\n\n`;
+            
+            // Show configuration
+            diagnostics += '2. Current configuration:\n';
+            diagnostics += JSON.stringify(sitrepService.config, null, 2);
+            diagnostics += '\n\n';
+            
+            // Test basic submission
+            diagnostics += '3. Testing basic SITREP submission...\n';
+            try {
+                const result = await sitrepService.submitSITREP({
+                    summary: '[DIAGNOSTIC] System health check',
+                    top_keywords: ['DIAGNOSTIC', 'HEALTH']
+                });
+                diagnostics += `   Result: ${result.success ? 'SUCCESS' : 'FAILED'}\n`;
+                diagnostics += `   Message: ${result.message}\n`;
+            } catch (error) {
+                diagnostics += `   Error: ${error.message}\n`;
+            }
+            
+            showResponse('diagnosticsResponse', diagnostics, 'info');
+        }
+
+        function clearResponses() {
+            const responses = document.querySelectorAll('.response-area');
+            responses.forEach(response => {
+                response.style.display = 'none';
+                response.textContent = '';
+            });
+        }
+
+        function generateCurlCommands() {
+            const apiKey = document.getElementById('apiKey').value || 'YOUR_API_KEY';
+            const apiUrl = document.getElementById('apiUrl').value;
+            
+            // Basic SITREP
+            document.getElementById('basicCurl').textContent = 
+                `curl -X POST '${apiUrl}?api_key=${apiKey}' \\\n` +
+                `  -H 'Content-Type: application/json' \\\n` +
+                `  -d '{\n` +
+                `    "date_gst": "${new Date().toISOString().slice(0, 19).replace('T', ' ')}",\n` +
+                `    "group_name": "[HVDC] Project Lightning",\n` +
+                `    "summary": "[ACTION] SITREP 테스트 기록",\n` +
+                `    "top_keywords": ["SITREP","AGI"],\n` +
+                `    "sla_breaches": 0,\n` +
+                `    "attachments": []\n` +
+                `  }'`;
+
+            // Logistics SITREP
+            document.getElementById('logisticsCurl').textContent = 
+                `curl -X POST '${apiUrl}?api_key=${apiKey}' \\\n` +
+                `  -H 'Content-Type: application/json' \\\n` +
+                `  -d '{\n` +
+                `    "summary": "[LOGISTICS] Container delivery completed",\n` +
+                `    "top_keywords": ["LOGISTICS","CONTAINER","DELIVERY"],\n` +
+                `    "sla_breaches": 0\n` +
+                `  }'`;
+
+            // Container SITREP
+            document.getElementById('containerCurl').textContent = 
+                `curl -X POST '${apiUrl}?api_key=${apiKey}' \\\n` +
+                `  -H 'Content-Type: application/json' \\\n` +
+                `  -d '{\n` +
+                `    "summary": "[CONTAINER] Container CONT-001: Loading delayed",\n` +
+                `    "top_keywords": ["CONTAINER","STOWAGE","CONT-001"],\n` +
+                `    "sla_breaches": 1\n` +
+                `  }'`;
+
+            // Weather SITREP
+            document.getElementById('weatherCurl').textContent = 
+                `curl -X POST '${apiUrl}?api_key=${apiKey}' \\\n` +
+                `  -H 'Content-Type: application/json' \\\n` +
+                `  -d '{\n` +
+                `    "summary": "[WEATHER] Storm warning - Port operations suspended",\n` +
+                `    "top_keywords": ["WEATHER","ETA","DELAY_36h"],\n` +
+                `    "sla_breaches": 1\n` +
+                `  }'`;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateConnectionStatus('offline', 'Not connected');
+            generateCurlCommands();
+        });
+    </script>
+</body>
+</html>
+

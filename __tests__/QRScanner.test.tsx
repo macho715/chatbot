@@ -5,16 +5,18 @@ import QRScanner from '../components/molecules/QRScanner';
 
 // Mock the QR scanner library
 jest.mock('@yudiel/react-qr-scanner', () => ({
-  Scanner: ({ onScan }: { onScan: (result: string) => void }) => (
-    <div data-testid="qr-scanner">
-      <button 
-        onClick={() => onScan('LPO123')}
-        data-testid="mock-scan-button"
-      >
-        Mock Scan
-      </button>
-    </div>
-  ),
+  Scanner: function MockScanner(props) {
+    return (
+      <div data-testid="qr-scanner">
+        <button 
+          onClick={() => props.onScan('LPO123')}
+          data-testid="mock-scan-button"
+        >
+          Mock Scan
+        </button>
+      </div>
+    );
+  },
   useDevices: () => ({
     devices: [
       { deviceId: '1', label: 'Camera 1' },
