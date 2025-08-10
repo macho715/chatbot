@@ -119,18 +119,20 @@ describe('SITREPService', () => {
     });
 
     test('should handle timeout', async () => {
-      (global.fetch as jest.Mock).mockImplementation(() => 
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('AbortError')), 2000)
-        )
+      // Speed up test: reject immediately and stub internal backoff delay
+      (global.fetch as jest.Mock).mockImplementation(() =>
+        Promise.reject(new Error('AbortError'))
       );
+      const delaySpy = jest
+        .spyOn(service as any, 'delay')
+        .mockResolvedValue(undefined);
 
-      const result = await service.submitSITREP({
-        summary: 'Test Timeout'
-      });
+      const result = await service.submitSITREP({ summary: 'Test Timeout' });
 
       expect(result.success).toBe(false);
       expect(result.message).toContain('Failed to submit SITREP after 2 attempts');
+
+      delaySpy.mockRestore();
     });
   });
 

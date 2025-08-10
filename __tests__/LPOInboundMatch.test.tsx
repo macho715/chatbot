@@ -4,17 +4,28 @@ import '@testing-library/jest-dom';
 import LPOInboundMatch from '../components/LPOInboundMatch';
 
 // Mock the custom hook
+const mockUseLPOMatching = jest.fn();
+
 jest.mock('../hooks/useLPOMatching', () => ({
-  useLPOMatching: () => ({
-    result: null,
-    loading: false,
-    error: null,
-    queryLPO: jest.fn(),
-    reset: jest.fn(),
-  }),
+  useLPOMatching: () => mockUseLPOMatching(),
 }));
 
 describe('LPOInboundMatch', () => {
+  beforeEach(() => {
+    // 기본 mock 설정
+    mockUseLPOMatching.mockReturnValue({
+      result: null,
+      loading: false,
+      error: null,
+      queryLPO: jest.fn(),
+      reset: jest.fn(),
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render LPO scanner form', () => {
     render(<LPOInboundMatch />);
     
@@ -24,51 +35,40 @@ describe('LPOInboundMatch', () => {
   });
 
   it('should show loading state when loading', () => {
-    // Mock loading state
-    jest.doMock('../hooks/useLPOMatching', () => ({
-      useLPOMatching: () => ({
-        result: null,
-        loading: true,
-        error: null,
-        queryLPO: jest.fn(),
-        reset: jest.fn(),
-      }),
-    }));
+    mockUseLPOMatching.mockReturnValue({
+      result: null,
+      loading: true,
+      error: null,
+      queryLPO: jest.fn(),
+      reset: jest.fn(),
+    });
 
     render(<LPOInboundMatch />);
-    
     expect(screen.getByText('데이터를 불러오는 중...')).toBeInTheDocument();
   });
 
   it('should show error message when error occurs', () => {
-    // Mock error state
-    jest.doMock('../hooks/useLPOMatching', () => ({
-      useLPOMatching: () => ({
-        result: null,
-        loading: false,
-        error: 'LPO 번호를 찾을 수 없습니다.',
-        queryLPO: jest.fn(),
-        reset: jest.fn(),
-      }),
-    }));
+    mockUseLPOMatching.mockReturnValue({
+      result: null,
+      loading: false,
+      error: 'LPO 번호를 찾을 수 없습니다.',
+      queryLPO: jest.fn(),
+      reset: jest.fn(),
+    });
 
     render(<LPOInboundMatch />);
-    
     expect(screen.getByText('LPO 번호를 찾을 수 없습니다.')).toBeInTheDocument();
   });
 
   it('should handle LPO input and submission', async () => {
     const mockQueryLPO = jest.fn();
-    
-    jest.doMock('../hooks/useLPOMatching', () => ({
-      useLPOMatching: () => ({
-        result: null,
-        loading: false,
-        error: null,
-        queryLPO: mockQueryLPO,
-        reset: jest.fn(),
-      }),
-    }));
+    mockUseLPOMatching.mockReturnValue({
+      result: null,
+      loading: false,
+      error: null,
+      queryLPO: mockQueryLPO,
+      reset: jest.fn(),
+    });
 
     render(<LPOInboundMatch />);
     

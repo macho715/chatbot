@@ -36,8 +36,9 @@ jest.mock('../components/organisms/LPOMatchingResult', () => {
   };
 });
 
-jest.mock('../components/molecules/QRCodeGenerator', () => {
-  return function MockQRCodeGenerator() {
+jest.mock('../components/molecules/QRCodeGenerator', () => ({
+  __esModule: true,
+  default: function MockQRCodeGenerator() {
     return (
       <div data-testid="qr-code-generator">
         <h3>QR 코드 생성</h3>
@@ -45,30 +46,32 @@ jest.mock('../components/molecules/QRCodeGenerator', () => {
         <button data-testid="qr-generate">생성</button>
       </div>
     );
-  };
-});
+  },
+}));
 
-jest.mock('../components/organisms/ScanHistory', () => {
-  return function MockScanHistory() {
+jest.mock('../components/organisms/ScanHistory', () => ({
+  __esModule: true,
+  default: function MockScanHistory() {
     return (
       <div data-testid="scan-history">
         <h3>스캔 히스토리</h3>
         <p>히스토리가 없습니다.</p>
       </div>
     );
-  };
-});
+  },
+}));
 
-jest.mock('../components/organisms/BatchScanner', () => {
-  return function MockBatchScanner() {
+jest.mock('../components/organisms/BatchScanner', () => ({
+  __esModule: true,
+  default: function MockBatchScanner() {
     return (
       <div data-testid="batch-scanner">
         <h3>배치 스캐너</h3>
         <button data-testid="batch-start">배치 스캔 시작</button>
       </div>
     );
-  };
-});
+  },
+}));
 
 // Mock the custom hook
 jest.mock('../hooks/useLPOMatching', () => ({
@@ -127,7 +130,7 @@ describe('DOM Integration Tests', () => {
       expect(screen.getByText('📦 LPO 인바운드 매치')).toBeInTheDocument();
       expect(screen.getByText('📱 QR 코드 생성')).toBeInTheDocument();
       expect(screen.getByText('📋 스캔 히스토리')).toBeInTheDocument();
-      expect(screen.getByText('📦 배치 스캔')).toBeInTheDocument();
+      expect(screen.getByText('🚀 배치 스캔')).toBeInTheDocument();
     });
 
     it('should navigate to different views when buttons are clicked', async () => {
@@ -143,7 +146,7 @@ describe('DOM Integration Tests', () => {
       });
       
       // Go back to main menu
-      const backButton = screen.getByText('← 메인 메뉴');
+      const backButton = screen.getByText('🔙 메뉴로 돌아가기');
       fireEvent.click(backButton);
       
       await waitFor(() => {
@@ -179,7 +182,7 @@ describe('DOM Integration Tests', () => {
       const ChatBox = require('../components/ChatBox').default;
       render(<ChatBox />);
       
-      const batchButton = screen.getByText('📦 배치 스캔');
+      const batchButton = screen.getByText('🚀 배치 스캔');
       fireEvent.click(batchButton);
       
       await waitFor(() => {
@@ -275,7 +278,7 @@ describe('DOM Integration Tests', () => {
         '📦 LPO 인바운드 매치',
         '📱 QR 코드 생성',
         '📋 스캔 히스토리',
-        '📦 배치 스캔'
+        '🚀 배치 스캔'
       ];
       
       for (const option of menuOptions) {
@@ -296,7 +299,7 @@ describe('DOM Integration Tests', () => {
         });
         
         // Go back to main menu
-        fireEvent.click(screen.getByText('← 메인 메뉴'));
+        fireEvent.click(screen.getByText('🔙 메뉴로 돌아가기'));
         
         await waitFor(() => {
           expect(screen.getByText('📦 LPO 인바운드 매치')).toBeInTheDocument();
@@ -314,7 +317,7 @@ describe('DOM Integration Tests', () => {
       expect(screen.getByText('📦 LPO 인바운드 매치')).toBeInTheDocument();
       expect(screen.getByText('📱 QR 코드 생성')).toBeInTheDocument();
       expect(screen.getByText('📋 스캔 히스토리')).toBeInTheDocument();
-      expect(screen.getByText('📦 배치 스캔')).toBeInTheDocument();
+      expect(screen.getByText('🚀 배치 스캔')).toBeInTheDocument();
     });
 
     it('should have proper form labels and placeholders', () => {

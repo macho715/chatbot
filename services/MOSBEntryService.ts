@@ -139,13 +139,18 @@ class MOSBEntryService {
 
   // 전화번호 유효성 검증
   validatePhoneNumber(phone: string): boolean {
-    const phoneRegex = /^(\+971|971)?[0-9]{9}$/;
-    return phoneRegex.test(phone.replace(/\s+/g, ''));
+    // Normalize: remove all non-digits, drop leading 00 (international prefix)
+    const digitsOnly = phone.replace(/[^0-9]/g, '');
+    const normalized = digitsOnly.startsWith('00') ? digitsOnly.slice(2) : digitsOnly;
+    // Accept forms like +971-50-123-4567, 971501234567, 00971 50 123 4567
+    // After normalization, valid numbers should start with 971 followed by 9 digits (e.g., 971501234567)
+    const pattern = /^971\d{9}$/;
+    return pattern.test(normalized);
   }
 
   // LPO 번호 유효성 검증
   validateLPONumber(lpoNumber: string): boolean {
-    const lpoRegex = /^LPO-\d{4}-\d{6}$/;
+    const lpoRegex = /^LPO-\d{4}-\d{6}$/i;
     return lpoRegex.test(lpoNumber);
   }
 

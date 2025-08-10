@@ -1,6 +1,6 @@
 import React from 'react';
 
-export interface ButtonProps {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   onClick?: () => void;
   variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning';
@@ -17,7 +17,8 @@ const Button: React.FC<ButtonProps> = React.memo(({
   size = 'md',
   disabled = false,
   className = '',
-  type = 'button'
+  type = 'button',
+  ...rest
 }) => {
   const baseClasses = 'font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200';
   
@@ -45,6 +46,7 @@ const Button: React.FC<ButtonProps> = React.memo(({
       onClick={onClick}
       disabled={disabled}
       className={classes}
+      {...(rest as Record<string, unknown>)}
     >
       {children}
     </button>
