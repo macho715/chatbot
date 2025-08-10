@@ -104,3 +104,9 @@ jspm_packages/
 .yarn/install-state.gz
 .pnp.* 
 .vercel
+
+# Jest setup files
+jest.setup.react.ts
+
+# TypeScript build info
+tsconfig.tsbuildinfo
