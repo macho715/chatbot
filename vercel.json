@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "mosb-gate-agent",
   "builds": [
     {
       "src": "package.json",
@@ -15,11 +14,6 @@
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "functions": {
-    "pages/api/**/*.ts": {
-      "runtime": "nodejs20.x"
-    }
   },
   "regions": ["iad1"],
   "github": {
