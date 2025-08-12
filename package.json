@@ -28,7 +28,10 @@
     "@swc/helpers": "^0.5.17",
     "@yudiel/react-qr-scanner": "^2.3.1",
     "autoprefixer": "^10.4.0",
+    "compromise": "^14.14.4",
+    "compromise-numbers": "^1.4.0",
     "html5-qrcode": "^2.3.8",
+    "natural": "^8.1.0",
     "next": "^12.3.4",
     "postcss": "^8.4.0",
     "qrcode.react": "^3.1.0",
@@ -37,19 +40,19 @@
     "tailwindcss": "^3.3.0"
   },
   "devDependencies": {
-    "@testing-library/dom": "^8.20.0",
+    "@testing-library/dom": "^8.20.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^30.0.0",
     "@types/minimatch": "^5.1.2",
-    "@types/node": "^24.2.1",
-    "@types/react": "^19.1.9",
-    "@types/react-dom": "^19.1.7",
+    "@types/node": "24.2.1",
+    "@types/react": "19.1.10",
+    "@types/react-dom": "^17.0.26",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "5.9.2"
   }
 }

@@ -1,260 +1,238 @@
 // components/ChatBox.tsx - Enhanced ChatBox with MOSB Entry System support
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import LPOInboundMatch from './LPOInboundMatch';
-import QRCodeGenerator from './molecules/QRCodeGenerator';
-import ScanHistory from './organisms/ScanHistory';
-import BatchScanner from './organisms/BatchScanner';
+import React, { useState, useRef, useEffect } from 'react';
+import { NaturalLanguageProcessor, CommandIntent, CommandResponse } from '../services/NaturalLanguageProcessor';
 
-// 기존 ChatBox 컴포넌트에 MOSB 명령어 추가
-const enhancedCommands = [
-  // 기존 명령어들 (유지)
-  "help - Show available commands",
-  "status - Check system status", 
-  "gate-pass [id] - Check gate pass status",
-  
-  // 🆕 새로운 MOSB 명령어들
-  "mosb entry - Start MOSB gate entry application",
-  "mosb status [id] - Check MOSB application status", 
-  "lpo find [number] - Find LPO location",
-  "lpo scan - Scan LPO QR code for location"
-];
-
-// Placeholder components for each menu entry (to be expanded later)
-function GatePassStatus() {
-  return <p className="p-4">🔄 Gate Pass 상태 조회 모듈 (API 연동 예정)</p>;
+interface ChatMessage {
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp: Date;
+  intent?: CommandIntent;
+  response?: CommandResponse;
 }
 
-function VehicleETA() {
-  return <p className="p-4">🚚 차량 ETA 등록 화면 (드라이버/담당자 입력)</p>;
+interface ChatBoxProps {
+  onAction?: (action: string, data?: any) => void;
+  className?: string;
 }
 
-function DocumentUpload() {
-  return <p className="p-4">📤 PPE / MSDS 등 문서 업로드 기능 (파일 업로드 예정)</p>;
-}
-
-function EntryHistory() {
-  return <p className="p-4">🧾 최근 출입 이력 표시 (DB 연동 예정)</p>;
-}
-
-function NoticeBoard() {
-  return <p className="p-4">📢 공지사항 및 알림 확인 (관리자 Push 예정)</p>;
-}
-
-function LPOInbound() {
-  return <LPOInboundMatch />;
-}
-
-function QRGenerator() {
-  return <QRCodeGenerator />;
-}
-
-function HistoryView() {
-  return (
-    <ScanHistory 
-      onSelectLPO={(lpoNumber) => {
-        // TODO: LPO 번호를 LPOInboundMatch에 전달하는 로직 추가
-        console.log('Selected LPO:', lpoNumber);
-      }} 
-    />
-  );
-}
-
-function BatchScanView() {
-  return (
-    <BatchScanner 
-      onBatchComplete={(result) => {
-        console.log('Batch scan completed:', result);
-      }}
-    />
-  );
-}
-
-export default function MOSBGateAgentApp() {
-  const [view, setView] = useState<'menu' | 'gate' | 'eta' | 'doc' | 'history' | 'notice' | 'lpo' | 'qr' | 'scan-history' | 'batch-scan'>('menu');
-  const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Array<{text: string | React.ReactNode, isUser: boolean}>>([
-    { text: "Welcome to MOSB Gate Agent v2.0! Type 'help' for available commands.", isUser: false }
+const ChatBox: React.FC<ChatBoxProps> = ({ onAction, className = '' }) => {
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      text: '안녕하세요! MOSB Gate Agent AI 어시스턴트입니다. 무엇을 도와드릴까요?',
+      isUser: false,
+      timestamp: new Date(),
+      response: {
+        success: true,
+        message: '안녕하세요! MOSB Gate Agent AI 어시스턴트입니다. 무엇을 도와드릴까요?',
+        action: 'show_welcome',
+        suggestions: ['MOSB 신청', 'LPO 조회', '상태 확인', '도움말']
+      }
+    }
   ]);
 
-  const handleCommand = (command: string) => {
-    const cmd = command.toLowerCase().trim();
-    
-    // 기존 명령어 처리 (유지)
-    if (cmd === 'help') {
-      addMessage("Available commands:");
-      enhancedCommands.forEach(cmd => addMessage(`• ${cmd}`));
-      return;
-    }
-    
-    // 🆕 새로운 MOSB 명령어 처리
-    if (cmd === 'mosb entry') {
-      addMessage("Redirecting to MOSB Entry Application...");
-      setTimeout(() => {
-        window.location.href = '/mosb-entry';
-      }, 1000);
-      return;
-    }
-    
-    if (cmd.startsWith('mosb status')) {
-      const id = cmd.split(' ')[2];
-      if (id) {
-        addMessage(`Checking status for application: ${id}`);
-        addMessage("Please use the Application Status tab in MOSB Entry System for detailed status.");
-        addMessage(<Link href="/mosb-entry?tab=status" className="text-blue-600 underline">→ Go to Status Check</Link>);
-      } else {
-        addMessage("Please provide application ID. Example: mosb status MSB-2024-001234");
-      }
-      return;
-    }
-    
-    if (cmd.startsWith('lpo find')) {
-      const lpoNumber = cmd.split(' ')[2];
-      if (lpoNumber) {
-        addMessage(`Searching location for LPO: ${lpoNumber}`);
-        addMessage("Redirecting to LPO Location Finder...");
-        setTimeout(() => {
-          window.location.href = '/mosb-entry?tab=lpo';
-        }, 1000);
-      } else {
-        addMessage("Please provide LPO number. Example: lpo find LPO-2024-001234");
-      }
-      return;
-    }
-    
-    if (cmd === 'lpo scan') {
-      addMessage("Opening LPO QR Scanner...");
-      setTimeout(() => {
-        window.location.href = '/mosb-entry?tab=lpo&action=scan';
-      }, 1000);
-      return;
-    }
-    
-    // 기존 명령어 처리 로직 (유지)
-    // ... existing command handling ...
-    
-    // 알 수 없는 명령어
-    addMessage(`Unknown command: ${command}. Type 'help' for available commands.`);
+  const [inputText, setInputText] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const nlpProcessor = useRef(new NaturalLanguageProcessor());
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const addMessage = (text: string | React.ReactNode, isUser = false) => {
-    setMessages(prev => [...prev, { text, isUser }]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const addMessage = (text: string, isUser: boolean, intent?: CommandIntent, response?: CommandResponse) => {
+    const newMessage: ChatMessage = {
+      id: Date.now().toString(),
+      text,
+      isUser,
+      timestamp: new Date(),
+      intent,
+      response
+    };
+
+    setMessages(prev => [...prev, newMessage]);
+  };
+
+  const processUserInput = async (userInput: string) => {
+    if (!userInput.trim()) return;
+
+    setIsProcessing(true);
+
+    // 사용자 메시지 추가
+    addMessage(userInput, true);
+
+    try {
+      // 자연어 처리로 명령어 의도 파악
+      const intent = nlpProcessor.current.processCommand(userInput);
+
+      // 응답 생성
+      const response = nlpProcessor.current.generateResponse(intent);
+
+      // AI 응답 메시지 추가
+      addMessage(response.message, false, intent, response);
+
+      // 제안사항 업데이트
+      setSuggestions(response.suggestions || []);
+
+      // 액션 실행 (부모 컴포넌트에 전달)
+      if (onAction && response.action) {
+        onAction(response.action, response.data);
+      }
+
+    } catch (error) {
+      console.error('Error processing user input:', error);
+      addMessage('죄송합니다. 명령어를 처리하는 중 오류가 발생했습니다. 다시 시도해주세요.', false);
+    } finally {
+      setIsProcessing(false);
+      setInputText('');
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
-    
-    addMessage(input, true);
-    handleCommand(input);
-    setInput('');
-  };
-
-  const renderView = () => {
-    switch (view) {
-      case 'gate': return <GatePassStatus />;
-      case 'eta': return <VehicleETA />;
-      case 'doc': return <DocumentUpload />;
-      case 'history': return <EntryHistory />;
-      case 'notice': return <NoticeBoard />;
-      case 'lpo': return <LPOInbound />;
-      case 'qr': return <QRGenerator />;
-      case 'scan-history': return <HistoryView />;
-      case 'batch-scan': return <BatchScanView />;
-      default:
-        return (
-          <div className="space-y-4">
-            {/* 기존 기능 버튼들 */}
-            <div className="grid gap-3">
-              <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setView('gate')}>🔄 Gate Pass 조회</button>
-              <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setView('eta')}>🚚 차량 ETA 등록</button>
-              <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setView('doc')}>📤 문서 제출 (PPE / MSDS)</button>
-              <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setView('history')}>🧾 출입 이력 보기</button>
-              <button className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => setView('notice')}>📢 공지사항 확인</button>
-              <button className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={() => setView('lpo')}>📦 LPO 인바운드 매치</button>
-              <button className="w-full bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded" onClick={() => setView('qr')}>📱 QR 코드 생성</button>
-              <button className="w-full bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded" onClick={() => setView('scan-history')}>📋 스캔 히스토리</button>
-              <button className="w-full bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded" onClick={() => setView('batch-scan')}>🚀 배치 스캔</button>
-            </div>
-
-            {/* 🆕 새로운 MOSB Entry 기능들 */}
-            <div className="border-t pt-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                <span className="mr-2">✨</span>
-                New: MOSB Entry System
-              </h3>
-              <div className="grid gap-3">
-                <Link href="/mosb-entry">
-                  <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded border-2 border-green-400">
-                    🚚 MOSB Entry Bot
-                  </button>
-                </Link>
-                <Link href="/mosb-entry?tab=lpo">
-                  <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded border-2 border-green-400">
-                    📍 LPO Location Finder
-                  </button>
-                </Link>
-                <Link href="/mosb-entry?tab=status">
-                  <button className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded border-2 border-green-400">
-                    📋 Application Status
-                  </button>
-                </Link>
-              </div>
-            </div>
-
-            {/* Enhanced Chat Assistant */}
-            <div className="border-t pt-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">Enhanced Chat Assistant</h3>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="h-32 overflow-y-auto space-y-2 mb-3">
-                  {messages.map((message, index) => (
-                    <div key={index} className={`${message.isUser ? 'text-right' : 'text-left'}`}>
-                      <div className={`inline-block p-2 rounded-lg text-sm ${
-                        message.isUser 
-                          ? 'bg-blue-600 text-white' 
-                          : 'bg-gray-200 text-gray-800'
-                      }`}>
-                        {typeof message.text === 'string' ? message.text : message.text}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <form onSubmit={handleSubmit} className="flex space-x-2">
-                  <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Type a command... (try 'mosb entry' or 'lpo find')"
-                    className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-                  >
-                    Send
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        );
+    if (inputText.trim() && !isProcessing) {
+      processUserInput(inputText);
     }
   };
 
-  return (
-    <div className="max-w-xl mx-auto p-4">
-      <div className="rounded-2xl shadow-lg bg-white">
-        <div className="p-6">
-          <div className="h-[420px] pr-4 overflow-y-auto">
-            {renderView()}
-            {view !== 'menu' && (
-              <button className="mt-6 w-full bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" onClick={() => setView('menu')}>🔙 메뉴로 돌아가기</button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+  const handleSuggestionClick = (suggestion: string) => {
+    setInputText(suggestion);
+    inputRef.current?.focus();
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (inputText.trim() && !isProcessing) {
+        processUserInput(inputText);
+      }
+    }
+  };
+
+  const getConfidenceColor = (confidence: number) => {
+    if (confidence >= 0.8) return 'text-green-500';
+    if (confidence >= 0.6) return 'text-yellow-500';
+    return 'text-red-500';
+  };
+
+  const getConfidenceText = (confidence: number) => {
+    if (confidence >= 0.8) return '높음';
+    if (confidence >= 0.6) return '보통';
+    return '낮음';
+  };
+
+  return React.createElement('div', { className: `bg-white rounded-lg shadow-lg border border-gray-200 ${className}` },
+    // 채팅 헤더
+    React.createElement('div', { className: "bg-blue-600 text-white px-4 py-3 rounded-t-lg" },
+      React.createElement('div', { className: "flex items-center space-x-2" },
+        React.createElement('div', { className: "w-3 h-3 bg-green-400 rounded-full animate-pulse" }),
+        React.createElement('h3', { className: "font-semibold" }, "MOSB AI Assistant"),
+        React.createElement('span', { className: "text-sm opacity-75" }, "실시간 지원")
+      )
+    ),
+
+    // 메시지 영역
+    React.createElement('div', { className: "h-96 overflow-y-auto p-4 space-y-4" },
+      messages.map((message) =>
+        React.createElement('div', {
+          key: message.id,
+          className: `flex ${message.isUser ? 'justify-end' : 'justify-start'}`
+        },
+          React.createElement('div', {
+            className: `max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+              message.isUser
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 text-gray-800'
+            }`
+          },
+            React.createElement('div', { className: "text-sm" }, message.text),
+
+            // AI 응답의 경우 추가 정보 표시
+            !message.isUser && message.intent && message.response &&
+            React.createElement('div', { className: "mt-2 pt-2 border-t border-gray-200" },
+              React.createElement('div', { className: "text-xs text-gray-600 space-y-1" },
+                React.createElement('div', null,
+                  React.createElement('span', { className: "font-medium" }, "인식된 명령:"), " ", message.intent.action
+                ),
+                message.intent.entity &&
+                React.createElement('div', null,
+                  React.createElement('span', { className: "font-medium" }, "추출된 정보:"), " ", message.intent.entity
+                ),
+                React.createElement('div', null,
+                  React.createElement('span', { className: "font-medium" }, "신뢰도:"),
+                  React.createElement('span', { className: `ml-1 ${getConfidenceColor(message.intent.confidence)}` },
+                    ` ${getConfidenceText(message.intent.confidence)} (${Math.round(message.intent.confidence * 100)}%)`
+                  )
+                )
+              )
+            )
+          )
+        )
+      ),
+
+      isProcessing &&
+      React.createElement('div', { className: "flex justify-start" },
+        React.createElement('div', { className: "bg-gray-100 text-gray-800 px-4 py-2 rounded-lg" },
+          React.createElement('div', { className: "flex items-center space-x-2" },
+            React.createElement('div', { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500" }),
+            React.createElement('span', { className: "text-sm" }, "처리 중...")
+          )
+        )
+      ),
+
+      React.createElement('div', { ref: messagesEndRef })
+    ),
+
+    // 제안사항
+    suggestions.length > 0 &&
+    React.createElement('div', { className: "px-4 pb-2" },
+      React.createElement('div', { className: "text-xs text-gray-500 mb-2" }, "추천 명령어:"),
+      React.createElement('div', { className: "flex flex-wrap gap-2" },
+        suggestions.map((suggestion, index) =>
+          React.createElement('button', {
+            key: index,
+            onClick: () => handleSuggestionClick(suggestion),
+            className: "px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full hover:bg-blue-200 transition-colors"
+          }, suggestion)
+        )
+      )
+    ),
+
+    // 입력 영역
+    React.createElement('form', { onSubmit: handleSubmit, className: "border-t border-gray-200 p-4" },
+      React.createElement('div', { className: "flex space-x-2" },
+        React.createElement('input', {
+          ref: inputRef,
+          type: "text",
+          value: inputText,
+          onChange: (e) => setInputText(e.target.value),
+          onKeyPress: handleKeyPress,
+          placeholder: "자연어로 명령어를 입력하세요... (예: MOSB 신청, LPO 위치 찾기)",
+          className: "flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+          disabled: isProcessing
+        }),
+        React.createElement('button', {
+          type: "submit",
+          disabled: isProcessing || !inputText.trim(),
+          className: "px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        }, "전송")
+      ),
+
+      // 도움말
+      React.createElement('div', { className: "mt-2 text-xs text-gray-500" },
+        "💡 ", React.createElement('strong', null, "사용 예시:"), " \"LPO-2024-001234 위치 알려줘\", \"MOSB 신청서 작성하고 싶어요\", \"날씨 확인해줘\""
+      )
+    )
   );
-}
+};
+
+export default ChatBox;

@@ -1,5 +1,4 @@
-import '@testing-library/jest-dom';
-
+// Jest setup for Node environment
 // Mock Next.js router
 jest.mock('next/router', () => ({
   useRouter() {
@@ -24,17 +23,15 @@ jest.mock('next/router', () => ({
   },
 }));
 
-// Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: jest.fn().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(),
-    removeListener: jest.fn(),
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-}); 
+// Mock global fetch for Node environment
+global.fetch = jest.fn();
+
+// Mock console methods
+global.console = {
+  ...console,
+  log: jest.fn(),
+  debug: jest.fn(),
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+}; 

@@ -1,11 +1,15 @@
 
-// pages/index.tsx - MOSB Gate Agent v2.0 메인 페이지 (업데이트됨)
+// pages/index.tsx - MOSB Gate Agent v2.0 메인 페이지 (자연어 처리 ChatBox 추가)
 
-import React from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import ChatBox from '../components/ChatBox';
 
 const HomePage: React.FC = () => {
+  const [chatAction, setChatAction] = useState<string>('');
+  const [chatData, setChatData] = useState<any>(null);
+
   // 기존 9개 기능에 새로운 기능 추가
   const features = [
     // 기존 9개 기능들 (유지)
@@ -88,6 +92,53 @@ const HomePage: React.FC = () => {
     }
   ];
 
+  // ChatBox 액션 핸들러
+  const handleChatAction = (action: string, data?: any) => {
+    setChatAction(action);
+    setChatData(data);
+    
+    // 액션에 따른 페이지 이동
+    switch (action) {
+      case 'navigate_to_mosb_entry':
+        window.location.href = '/mosb-entry';
+        break;
+      case 'find_lpo_location':
+        if (data?.lpoNumber) {
+          window.location.href = `/mosb-entry?tab=lpo&lpo=${data.lpoNumber}`;
+        } else {
+          window.location.href = '/mosb-entry?tab=lpo';
+        }
+        break;
+      case 'check_mosb_status':
+        if (data?.applicationId) {
+          window.location.href = `/mosb-entry?tab=status&id=${data.applicationId}`;
+        } else {
+          window.location.href = '/mosb-entry?tab=status';
+        }
+        break;
+      case 'start_qr_scan':
+        window.location.href = '/mosb-entry?tab=lpo&action=scan';
+        break;
+      case 'start_document_upload':
+        window.location.href = '/mosb-entry?tab=documents';
+        break;
+      case 'check_weather':
+        // 날씨 정보 모달 또는 페이지 표시
+        console.log('Weather check requested');
+        break;
+      case 'check_port_status':
+        // 항구 상태 정보 표시
+        console.log('Port status check requested');
+        break;
+      case 'contact_support':
+        // 지원팀 연락 정보 표시
+        console.log('Support contact requested');
+        break;
+      default:
+        console.log('Action:', action, 'Data:', data);
+    }
+  };
+
   return React.createElement(React.Fragment, null,
     React.createElement(Head, null,
       React.createElement('title', null, "MOSB Gate Agent v2.0 | Samsung C&T Logistics"),
@@ -98,11 +149,11 @@ const HomePage: React.FC = () => {
       // 헤더
       React.createElement('header', { className: "bg-gradient-to-r from-blue-600 to-blue-800 text-white" },
         React.createElement('div', { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" },
-          React.createElement('h1', { className: "text-3xl font-bold" }, "MOSB Gate Agent v2.0"),
-          React.createElement('p', { className: "mt-2 text-blue-200" }, "Samsung C&T Logistics - 물류 출입 관리 시스템"),
-          
-          // 새로운 기능 알림
-          React.createElement('div', { className: "mt-4 bg-blue-500 bg-opacity-50 rounded-lg p-3" },
+          React.createElement('div', { className: "flex items-center justify-between" },
+            React.createElement('div', { className: "flex items-center space-x-4" },
+              React.createElement('div', { className: "text-3xl font-bold" }, "🚚 MOSB Gate Agent v2.0"),
+              React.createElement('div', { className: "text-sm opacity-75" }, "Samsung C&T Logistics | ADNOC·DSV Partnership")
+            ),
             React.createElement('div', { className: "flex items-center space-x-2" },
               React.createElement('span', { className: "text-yellow-300" }, "✨"),
               React.createElement('span', { className: "text-sm font-medium" }, "New: MOSB Entry Application System 출시!"),
@@ -118,6 +169,48 @@ const HomePage: React.FC = () => {
       // 메인 컨텐츠
       React.createElement('main', { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" },
         React.createElement('div', { className: "space-y-8" },
+          // AI Chat Assistant 섹션 (새로 추가)
+          React.createElement('section', null,
+            React.createElement('h2', { className: "text-2xl font-bold text-gray-900 mb-4 flex items-center" },
+              React.createElement('span', { className: "mr-2" }, "🤖"),
+              "AI Chat Assistant - 자연어 명령어 처리"
+            ),
+            React.createElement('div', { className: "bg-white rounded-lg shadow-lg p-6" },
+              React.createElement('div', { className: "grid grid-cols-1 lg:grid-cols-3 gap-6" },
+                // ChatBox
+                React.createElement('div', { className: "lg:col-span-2" },
+                  React.createElement(ChatBox, { 
+                    onAction: handleChatAction,
+                    className: "h-full"
+                  })
+                ),
+                // 기능 안내
+                React.createElement('div', { className: "space-y-4" },
+                  React.createElement('h3', { className: "text-lg font-semibold text-gray-900" }, "💡 사용 가능한 명령어"),
+                  React.createElement('div', { className: "space-y-2 text-sm" },
+                    React.createElement('div', { className: "p-2 bg-blue-50 rounded border-l-4 border-blue-400" },
+                      React.createElement('strong', null, "MOSB 관련:"),
+                      " 'MOSB 신청', '신청서 작성', '상태 확인'"
+                    ),
+                    React.createElement('div', { className: "p-2 bg-green-50 rounded border-l-4 border-green-400" },
+                      React.createElement('strong', null, "LPO 관련:"),
+                      " 'LPO 위치 찾기', 'QR 스캔', 'LPO-2024-001234 위치'"
+                    ),
+                    React.createElement('div', { className: "p-2 bg-purple-50 rounded border-l-4 border-purple-400" },
+                      React.createElement('strong', null, "기타:"),
+                      " '날씨 확인', '항구 상태', '도움말'"
+                    )
+                  ),
+                  React.createElement('div', { className: "p-3 bg-yellow-50 rounded border border-yellow-200" },
+                    React.createElement('p', { className: "text-sm text-yellow-800" },
+                      "💬 자연어로 자유롭게 대화하세요! AI가 명령어를 이해하고 적절한 기능으로 안내합니다."
+                    )
+                  )
+                )
+              )
+            )
+          ),
+
           // 새로운 기능 섹션
           React.createElement('section', null,
             React.createElement('h2', { className: "text-2xl font-bold text-gray-900 mb-4 flex items-center" },
@@ -193,7 +286,7 @@ const HomePage: React.FC = () => {
         React.createElement('div', { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center" },
           React.createElement('p', null, "© 2024 Samsung C&T Logistics. All rights reserved."),
           React.createElement('p', { className: "mt-2 text-sm text-gray-400" },
-            "MOSB Gate Agent v2.0 - Enhanced with MOSB Entry System"
+            "MOSB Gate Agent v2.0 - Enhanced with MOSB Entry System & AI Chat Assistant"
           )
         )
       )
