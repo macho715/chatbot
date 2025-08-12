@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
@@ -21,5 +22,12 @@ module.exports = {
   plugins: [],
   corePlugins: {
     preflight: true,
+  },
+  // CSS 생성 최적화
+  important: false,
+  separator: ':',
+  future: {
+    removeDeprecatedGapUtilities: true,
+    purgeLayersByDefault: true,
   },
 }

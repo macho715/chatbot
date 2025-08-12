@@ -1,40 +1,59 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false, // React 17 호환성을 위해 비활성화
+  reactStrictMode: false,
   swcMinify: false,
-  output: 'standalone', // Docker support
+  output: 'standalone',
   experimental: {
     forceSwcTransforms: false,
   },
-  // React 17 JSX 변환 호환성 강화
-  webpack: (config, { isServer }) => {
+  // CSS 최적화 설정
+  webpack: (config, { isServer, dev }) => {
     // React 17 JSX 변환 지원
     config.resolve.alias = {
       ...config.resolve.alias,
       'react/jsx-runtime': 'react/jsx-runtime.js',
       'react/jsx-dev-runtime': 'react/jsx-dev-runtime.js',
-      'react/jsx-runtime.js': 'react/jsx-runtime.js',
-      'react/jsx-dev-runtime.js': 'react/jsx-dev-runtime.js',
     };
     
-    // SWC 관련 모듈 오류 방지
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      '@swc/helpers': false,
-    };
-
-    // React 17 호환성을 위한 설정
+    // CSS 로딩 최적화
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
+        '@swc/helpers': false,
         fs: false,
         net: false,
         tls: false,
       };
     }
+
+    // CSS 처리 최적화
+    config.module.rules.forEach((rule) => {
+      if (rule.oneOf) {
+        rule.oneOf.forEach((oneOfRule) => {
+          if (oneOfRule.test && oneOfRule.test.test('.css')) {
+            oneOfRule.use.forEach((useItem) => {
+              if (useItem.loader && useItem.loader.includes('postcss-loader')) {
+                useItem.options = {
+                  ...useItem.options,
+                  postcssOptions: {
+                    plugins: [
+                      'tailwindcss',
+                      'autoprefixer',
+                    ],
+                  },
+                };
+              }
+            });
+          }
+        });
+      }
+    });
     
     return config;
   },
+  // CSS 최적화
+  optimizeFonts: true,
+  compress: true,
 }
 
 module.exports = nextConfig 
