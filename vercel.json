@@ -1,8 +1,3 @@
 {
-  "version": 2,
-  "regions": ["iad1"],
-  "github": {
-    "enabled": true,
-    "silent": false
-  }
+  "version": 2
 } 
