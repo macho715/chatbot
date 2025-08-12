@@ -25,29 +25,6 @@ const nextConfig = {
         tls: false,
       };
     }
-
-    // CSS 처리 최적화
-    config.module.rules.forEach((rule) => {
-      if (rule.oneOf) {
-        rule.oneOf.forEach((oneOfRule) => {
-          if (oneOfRule.test && oneOfRule.test.test('.css')) {
-            oneOfRule.use.forEach((useItem) => {
-              if (useItem.loader && useItem.loader.includes('postcss-loader')) {
-                useItem.options = {
-                  ...useItem.options,
-                  postcssOptions: {
-                    plugins: [
-                      'tailwindcss',
-                      'autoprefixer',
-                    ],
-                  },
-                };
-              }
-            });
-          }
-        });
-      }
-    });
     
     return config;
   },
