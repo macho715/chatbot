@@ -2,6 +2,11 @@
   "name": "mosb-gate-agent",
   "version": "2.0.0",
   "license": "UNLICENSED",
+  "packageManager": "npm@8.19.4",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
