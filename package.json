@@ -1,6 +1,7 @@
 {
   "name": "mosb-gate-agent",
   "version": "2.0.0",
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
