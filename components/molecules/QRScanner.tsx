@@ -13,6 +13,18 @@ const QRScannerComponent = dynamic(
   }
 );
 
+// Test environment fallback
+const TestQRScanner = ({ onScan, onError }: any) => (
+  <div data-testid="qr-scanner">
+    <button
+      onClick={() => onScan([{ rawValue: 'LPO123' }])}
+      data-testid="mock-scan-button"
+    >
+      Mock Scan
+    </button>
+  </div>
+);
+
 // const useDevices = dynamic(
 //   () => import('@yudiel/react-qr-scanner').then((mod) => ({ default: mod.useDevices })),
 //   { ssr: false }
@@ -91,7 +103,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScanned, disabled = false }) =>
       {/* 스캐너 모달 */}
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" data-testid="qr-scanner">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" data-testid="qr-scanner-modal">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">QR/바코드 스캔</h3>
               <Button
@@ -132,12 +144,21 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScanned, disabled = false }) =>
 
                 {/* QR 스캐너 컴포넌트 */}
                 <div className="relative">
-                  <QRScannerComponent
-                    onScan={handleScan}
-                    onError={(error) => {
-                      console.error('QR Scanner error:', error);
-                    }}
-                  />
+                  {process.env.NODE_ENV === 'test' ? (
+                    <TestQRScanner
+                      onScan={handleScan}
+                      onError={(error) => {
+                        console.error('QR Scanner error:', error);
+                      }}
+                    />
+                  ) : (
+                    <QRScannerComponent
+                      onScan={handleScan}
+                      onError={(error) => {
+                        console.error('QR Scanner error:', error);
+                      }}
+                    />
+                  )}
                 </div>
 
                 {/* test helpers moved below */}
@@ -148,23 +169,18 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScanned, disabled = false }) =>
                 </div>
               </div>
             )}
-            {/* Hidden test helpers always present for predictable tests */}
-            <div className="hidden">
-              <button
-                type="button"
-                data-testid="mock-scan-button"
-                onClick={() => handleScan([{ rawValue: 'LPO123' } as any])}
-              >
-                mock-scan
-              </button>
-              <button
-                type="button"
-                data-testid="mock-scan-empty-button"
-                onClick={() => handleScan([{ rawValue: '' } as any])}
-              >
-                mock-scan-empty
-              </button>
-            </div>
+            {/* Test helpers for empty scan testing */}
+            {process.env.NODE_ENV === 'test' && (
+              <div className="hidden">
+                <button
+                  type="button"
+                  data-testid="mock-scan-empty-button"
+                  onClick={() => handleScan([{ rawValue: '' } as any])}
+                >
+                  mock-scan-empty
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

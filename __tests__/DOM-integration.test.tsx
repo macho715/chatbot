@@ -127,10 +127,10 @@ describe('DOM Integration Tests', () => {
       render(<ChatBox />);
       
       // Check if main menu is rendered
-      expect(screen.getByText('📦 LPO 인바운드 매치')).toBeInTheDocument();
-      expect(screen.getByText('📱 QR 코드 생성')).toBeInTheDocument();
-      expect(screen.getByText('📋 스캔 히스토리')).toBeInTheDocument();
-      expect(screen.getByText('🚀 배치 스캔')).toBeInTheDocument();
+      expect(screen.getByText('LPO 인바운드 매치')).toBeInTheDocument();
+      expect(screen.getByText('QR 코드 생성')).toBeInTheDocument();
+      expect(screen.getByText('스캔 히스토리')).toBeInTheDocument();
+      expect(screen.getByText('배치 스캔')).toBeInTheDocument();
     });
 
     it('should navigate to different views when buttons are clicked', async () => {
@@ -138,7 +138,7 @@ describe('DOM Integration Tests', () => {
       render(<ChatBox />);
       
       // Click on LPO inbound match button
-      const lpoButton = screen.getByText('📦 LPO 인바운드 매치');
+      const lpoButton = screen.getByText('LPO 인바운드 매치');
       fireEvent.click(lpoButton);
       
       await waitFor(() => {
@@ -146,11 +146,11 @@ describe('DOM Integration Tests', () => {
       });
       
       // Go back to main menu
-      const backButton = screen.getByText('🔙 메뉴로 돌아가기');
+      const backButton = screen.getByText('메인 메뉴로 돌아가기');
       fireEvent.click(backButton);
       
       await waitFor(() => {
-        expect(screen.getByText('📦 LPO 인바운드 매치')).toBeInTheDocument();
+        expect(screen.getByText('LPO 인바운드 매치')).toBeInTheDocument();
       });
     });
 
@@ -158,7 +158,7 @@ describe('DOM Integration Tests', () => {
       const ChatBox = require('../components/ChatBox').default;
       render(<ChatBox />);
       
-      const qrButton = screen.getByText('📱 QR 코드 생성');
+      const qrButton = screen.getByText('QR 코드 생성');
       fireEvent.click(qrButton);
       
       await waitFor(() => {
@@ -170,7 +170,7 @@ describe('DOM Integration Tests', () => {
       const ChatBox = require('../components/ChatBox').default;
       render(<ChatBox />);
       
-      const historyButton = screen.getByText('📋 스캔 히스토리');
+      const historyButton = screen.getByText('스캔 히스토리');
       fireEvent.click(historyButton);
       
       await waitFor(() => {
@@ -182,7 +182,7 @@ describe('DOM Integration Tests', () => {
       const ChatBox = require('../components/ChatBox').default;
       render(<ChatBox />);
       
-      const batchButton = screen.getByText('🚀 배치 스캔');
+      const batchButton = screen.getByText('배치 스캔');
       fireEvent.click(batchButton);
       
       await waitFor(() => {
@@ -249,10 +249,10 @@ describe('DOM Integration Tests', () => {
       render(<ChatBox />);
       
       // Start from main menu
-      expect(screen.getByText('📦 LPO 인바운드 매치')).toBeInTheDocument();
+      expect(screen.getByText('LPO 인바운드 매치')).toBeInTheDocument();
       
       // Navigate to LPO scanner
-      fireEvent.click(screen.getByText('📦 LPO 인바운드 매치'));
+      fireEvent.click(screen.getByText('LPO 인바운드 매치'));
       
       await waitFor(() => {
         expect(screen.getByTestId('lpo-scanner-form')).toBeInTheDocument();
@@ -274,12 +274,12 @@ describe('DOM Integration Tests', () => {
       const ChatBox = require('../components/ChatBox').default;
       render(<ChatBox />);
       
-      const menuOptions = [
-        '📦 LPO 인바운드 매치',
-        '📱 QR 코드 생성',
-        '📋 스캔 히스토리',
-        '🚀 배치 스캔'
-      ];
+    const menuOptions = [
+      'LPO 인바운드 매치',
+      'QR 코드 생성',
+      '스캔 히스토리',
+      '배치 스캔'
+    ];
       
       for (const option of menuOptions) {
         // Navigate to option
@@ -299,10 +299,10 @@ describe('DOM Integration Tests', () => {
         });
         
         // Go back to main menu
-        fireEvent.click(screen.getByText('🔙 메뉴로 돌아가기'));
+        fireEvent.click(screen.getByText('메인 메뉴로 돌아가기'));
         
         await waitFor(() => {
-          expect(screen.getByText('📦 LPO 인바운드 매치')).toBeInTheDocument();
+          expect(screen.getByText('LPO 인바운드 매치')).toBeInTheDocument();
         });
       }
     });
@@ -314,10 +314,10 @@ describe('DOM Integration Tests', () => {
       render(<ChatBox />);
       
       // Check for main navigation
-      expect(screen.getByText('📦 LPO 인바운드 매치')).toBeInTheDocument();
-      expect(screen.getByText('📱 QR 코드 생성')).toBeInTheDocument();
-      expect(screen.getByText('📋 스캔 히스토리')).toBeInTheDocument();
-      expect(screen.getByText('🚀 배치 스캔')).toBeInTheDocument();
+      expect(screen.getByText('LPO 인바운드 매치')).toBeInTheDocument();
+      expect(screen.getByText('QR 코드 생성')).toBeInTheDocument();
+      expect(screen.getByText('스캔 히스토리')).toBeInTheDocument();
+      expect(screen.getByText('배치 스캔')).toBeInTheDocument();
     });
 
     it('should have proper form labels and placeholders', () => {
